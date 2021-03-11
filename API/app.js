@@ -1,6 +1,5 @@
 const express = require ( "express");
 const cors = require ( "cors");
-const bodyParser = require ( "body-parser");
 
 const db = require("./entity/models");
 db.sequelize.sync({force: true}).then( () => {
@@ -9,17 +8,19 @@ db.sequelize.sync({force: true}).then( () => {
 
 //Routes
 const userRoutes = require("./entity/user/user.routes");
+const postRoutes = require("./entity/post/post.routes");
 
 
 const app = express();
 app.use(cors());
 
-
-app.use(bodyParser.json());
+//remplace bodyParser.json()
+app.use(express.json());
 
 app.get("/", (req, res ) => res.json({message : "Bienvenue sur le réseau groupomania"}))
 
 app.use("/api/auth", userRoutes);
+app.use("/api/post", postRoutes),
 
 
 
