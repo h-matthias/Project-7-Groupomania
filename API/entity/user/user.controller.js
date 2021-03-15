@@ -11,15 +11,16 @@ exports.signup = (req, res, next) => {
     User.findOne({ where: {email: req.body.email}})
     .then(user => {
         if(user){
-            res.status(400).json({error : "Compte utilisateur déjà inscris"})
+            res.status(400).json({error : `L'adresse email ${user.email} est déjà inscris`})
         }else {
             bcrypt.hash(req.body.password, 10)
             .then(hash => { User.create ({
-                pseudo: req.body.pseudo,
+                lastname: req.body.lastname,
+                firstname: req.body.firstname,
                 email: req.body.email,
                 password: hash
             })
-                .then(data => res.status(201).json(`compte créer ${data.pseudo}`))
+                .then(data => res.status(201).json(`Compte créer ${data.lastname}`))
                 .catch(error => res.status(400).json( {msg :"error " + error }))
             })
             .catch(error => res.status(500).json(error))
@@ -36,10 +37,9 @@ exports.login = ( req, res, next ) => {
             .then(valid => {
                 if (valid){
                     res.status(200).json({ 
-                        userEmail : user.email,
-                        userRole: user.role,
+                        userId : user.id,
                         token: jwt.sign(
-                        { userEmail: user.email, userRole: user.role},
+                        { userId : user.id},
                         process.env.JWT_PASS,
                         { expiresIn: "24h" }                        
                         )
@@ -59,5 +59,20 @@ exports.login = ( req, res, next ) => {
     .catch( error => {
         console.log(error);
         res.status(501).json({error})})
+};
+
+
+exports.deleteUser = (req, res, next) => {
+    const id = req.body.userId;
+    User.destroy({ where: {id:id}})
+    .then( num => {
+        console.log(num);
+        if (num == 1){
+            res.status(200).json("compte suprimé avec succes")
+        } else {
+            res.status(200).json(`impossible de suprimé ce compte`)
+        }
+    })
+    .catch(error => res.status(500).json(error))
+
 }
-        
