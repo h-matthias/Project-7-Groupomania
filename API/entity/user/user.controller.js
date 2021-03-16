@@ -65,14 +65,13 @@ exports.login = ( req, res, next ) => {
 exports.deleteUser = (req, res, next) => {
     const id = req.body.userId;
     User.destroy({ where: {id:id}})
-    .then( num => {
-        console.log(num);
-        if (num == 1){
-            res.status(200).json("compte suprimé avec succes")
+    .then( sup => {
+        if (sup){
+            res.status(200).json("compte supprimé avec succes")
         } else {
-            res.status(200).json(`impossible de suprimé ce compte`)
+            res.status(400).json("impossible de supprimé ce compte")
         }
     })
-    .catch(error => res.status(500).json(error))
+    .catch(error => res.status(500).json({error}))
 
 }
