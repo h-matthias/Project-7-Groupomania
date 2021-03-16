@@ -18,6 +18,10 @@ db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
 db.user = require ("../user/user.model")(sequelize, Sequelize);
+db.post = require ("../post/post.model")(sequelize, Sequelize);
+
+db.user.hasMany(db.post);
+db.post.belongsTo(db.user);
 
 
 
