@@ -35,9 +35,19 @@ exports.modifyPost = (req, res, next) => {
         ...req.body,
         imageUrl: `${req.protocol}://${req.get("host")}/API/images/${req.file.filename}`
     } : { ...req.body } //op ternaire
-
+    
     if (req.file) {
-        fs.unlink
+        Post.findOne({where: {id: postId}})
+        .then(post => {
+            console.log(post.dataValues);
+            if (post.dataValues.imageUrl != null) {
+                const filename = post.dataValues.imageUrl.split("/images/")[1];
+                console.log(filename);
+                fs.unlink(`images/${filename}`, () => {
+                    console.log("image supprimé");
+                })
+            }
+        })
     }
     Post.update(postObject, { where: { id: postId }})
     .then( upd => {
@@ -48,21 +58,49 @@ exports.modifyPost = (req, res, next) => {
         }
     })
     .catch(error => res.status(500).json({error}))
+    
 }
 
-exports.deletePost = (req, res, next) => {
-    const postId = req.body.postId;
-    Post.destroy({ where: { id: postId }})
-    .then( del => {
-        if (del) {
-            res.status(200).json("publication supprimé avec succées")
+exports.deletePost = async (req, res, next) => {
+    const postId = req.params.id;
+    Post.findOne({where: {id: postId}})
+    .then(post => {
+        console.log(post.dataValues);
+        if (post.dataValues.imageUrl != null) {
+            const filename = post.dataValues.imageUrl.split("/images/")[1];
+            console.log(filename);
+            fs.unlink(`images/${filename}`, () => {
+                console.log("image supprimé");
+                
+                Post.destroy({ where: { id: postId } })
+                .then((del) => {
+                    if (del) {
+                        res.status(200).json(
+                            "publication supprimé avec succées"
+                        );
+                    } else {
+                        res.status(200).json(
+                            "impossible de supprimé cette publication"
+                        );
+                    }
+                })
+                .catch((error) => res.status(500).json({ error }));
+            });
         } else {
-            res.status(200).json("impossible de supprimé cette publication")
+            Post.destroy({ where: { id: postId } })
+            .then((del) => {
+                if (del) {
+                    res.status(200).json(
+                        "publication supprimé avec succées"
+                    );
+                } else {
+                    res.status(400).json(
+                        "impossible de supprimé cette publication"
+                    );
+                }
+            })
+            .catch((error) => res.status(404).json({ error }));
         }
     })
-    .catch(error => res.status(500).json({error}))
+    .catch(error => res.status(500).json({ error }))
 }
-
-
-
-

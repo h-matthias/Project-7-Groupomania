@@ -8,6 +8,6 @@ const multer = require("../../middleware/muter-config")
 router.get("/", postCtrl.getAllPost);
 router.post("/edit", multer, postCtrl.createPost);
 router.put("/:id", multer, postCtrl.modifyPost);
-router.delete("/delete-post", postCtrl.deletePost);
+router.delete("/:id", postCtrl.deletePost);
 
 module.exports = router
