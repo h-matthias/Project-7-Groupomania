@@ -1,12 +1,13 @@
 const db = require("../models/index");
 const Post = db.post;
+const Comment = db.comment;
 
 const fs = require("fs");
 
 
 
 exports.getAllPost = (req, res, next) => {
-    Post.findAll()
+    Post.findAll({include :["comments"]})
     .then( data => {
         if (data.length == 0){
             return res.status(404).json("aucun post n'à été touver")
@@ -59,7 +60,7 @@ exports.modifyPost = (req, res, next) => {
     })
     .catch(error => res.status(500).json({error}))
     
-}
+};
 
 exports.deletePost = async (req, res, next) => {
     const postId = req.params.id;
@@ -79,7 +80,7 @@ exports.deletePost = async (req, res, next) => {
                             "publication supprimé avec succées"
                         );
                     } else {
-                        res.status(200).json(
+                        res.status(400).json(
                             "impossible de supprimé cette publication"
                         );
                     }
@@ -103,4 +104,4 @@ exports.deletePost = async (req, res, next) => {
         }
     })
     .catch(error => res.status(500).json({ error }))
-}
+};
