@@ -37,9 +37,11 @@ exports.login = ( req, res, next ) => {
             .then(valid => {
                 if (valid){
                     res.status(200).json({ 
-                        userId : user.id,
+                        // userId : user.id,
+                        // userRole: user.role,
+                        // userEmail: user.email,
                         token: jwt.sign(
-                        { userId : user.id},
+                        { userId : user.id, userRole: user.role, userEmail: user.email},
                         process.env.JWT_PASS,
                         { expiresIn: "24h" }                        
                         )
