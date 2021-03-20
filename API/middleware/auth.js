@@ -5,15 +5,17 @@ module.exports = (req, res , next) => {
     try {
         const token = req.headers.authorization.split(" ")[1];
         const decodeToken = jwt.verify( token, process.env.JWT_PASS );
-        const userEmail = decodeToken.userEmail;
-        const userRole = decodeToken.userRole;
-
-        if ( req.body.userEmail && req.body.userEmail === userEmail ){
+        const userId = parseInt(decodeToken.userId);
+        const userRole = parseInt(decodeToken.userRole);
+        
+        if (( req.body.userId && req.body.userId === userId ) 
+            || ( req.body.userRole && req.body.userRole === userRole )){
             next()
         } else {
-            throw "Utilisateur non identifer";
+            throw "utilisateur non identifer";
         }
     } catch (error) {
-        res.status(401).json({ error: error | "Requête non autentifiée" })
+        console.log(error);
+        res.status(401).json( error )
     }
 }

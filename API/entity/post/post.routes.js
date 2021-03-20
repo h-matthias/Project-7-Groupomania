@@ -5,9 +5,9 @@ const postCtrl = require("./post.controller")
 const auth = require("../../middleware/auth")
 const multer = require("../../middleware/muter-config")
 
-router.get("/", postCtrl.getAllPost);
-router.post("/", multer, postCtrl.createPost);
-router.put("/:id", multer, postCtrl.modifyPost);
-router.delete("/:id", postCtrl.deletePost);
+router.get("/", auth, postCtrl.getAllPost);
+router.post("/", auth, multer, postCtrl.createPost);
+router.put("/:id", auth, multer, postCtrl.modifyPost);
+router.delete("/:id", auth, postCtrl.deletePost);
 
 module.exports = router
