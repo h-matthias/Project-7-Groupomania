@@ -21,7 +21,7 @@ exports.signup = (req, res, next) => {
                 password: hash
             })
                 .then(data => res.status(201).json(`Compte créer ${data.lastname}`))
-                .catch(error => res.status(400).json( {msg :"error " + error }))
+                .catch(error => res.status(400).json( error ))
             })
             .catch(error => res.status(500).json(error))
         }
@@ -52,7 +52,7 @@ exports.login = ( req, res, next ) => {
             })
             .catch(error => {
                 console.log(error);
-                res.status(502).json({error})
+                res.status(502).json(error)
             })
         }else {
             return res.status(404).json( {error : "Utilisateur non trouvé"})
@@ -60,7 +60,7 @@ exports.login = ( req, res, next ) => {
     })
     .catch( error => {
         console.log(error);
-        res.status(501).json({error})})
+        res.status(501).json(error)})
 };
 
 

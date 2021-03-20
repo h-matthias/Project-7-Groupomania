@@ -14,7 +14,7 @@ exports.getAllPost = (req, res, next) => {
         }
         res.status(200).json(data);
     })
-    .catch(error => res.status(500).json({error}))
+    .catch(error => res.status(500).json(error))
 };
 
 exports.createPost = (req, res, next) => {
@@ -27,7 +27,7 @@ exports.createPost = (req, res, next) => {
         ...postObject
     })
     .then( data => res.status(201).json(`post créer ${data.contentPost}`))
-    .catch( error => res.status(400).json({error}))
+    .catch( error => res.status(400).json(error))
 };
 
 exports.modifyPost = (req, res, next) => {
@@ -58,7 +58,7 @@ exports.modifyPost = (req, res, next) => {
             res.status(200).json("impossible de modifié cette publication")
         }
     })
-    .catch(error => res.status(500).json({error}))
+    .catch(error => res.status(500).json(error))
     
 };
 
@@ -85,10 +85,10 @@ exports.deletePost = async (req, res, next) => {
                         );
                     }
                 })
-                .catch((error) => res.status(500).json({ error }));
+                .catch((error) => res.status(500).json( error ));
             });
         } else {
-            Post.destroy({ where: { id: postId } })
+            Post.destroy({ where: { id: postId }})
             .then((del) => {
                 if (del) {
                     res.status(200).json(
@@ -100,8 +100,8 @@ exports.deletePost = async (req, res, next) => {
                     );
                 }
             })
-            .catch((error) => res.status(404).json({ error }));
+            .catch((error) => res.status(404).json( error ));
         }
     })
-    .catch(error => res.status(500).json({ error }))
+    .catch(error => res.status(500).json( error ))
 };
