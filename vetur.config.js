@@ -10,7 +10,8 @@ module.exports = {
         {
             root: "./frontend",
             package: "./package.json",
-            jsconfig: "./jsconfig.json"
+            jsconfig: "./jsconfig.json",
+            snippetFolder: "./.vscode/vetur/snippets",
         }
     ]
 
