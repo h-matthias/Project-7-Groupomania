@@ -4,8 +4,10 @@
     </header>
 
     <main>
-        <h1>Bienvenue sur le résau social de <span>Groupomania</span>.</h1>
-        <p>Réserve aux employé</p>
+        <div>
+            <h1>Bienvenue sur le résau social de <span>Groupomania</span>.</h1>
+            <p class="info">Réserve aux employé</p>
+        </div>
 
         <div class="container">
             <p>Entrez vos informations pour vous connecter.</p>
@@ -37,49 +39,73 @@
                     />
                 </div>
 
-                <button 
-                    @click.prevent="login" 
-                    class="form__btn">
-                        Se connecter
+                <button @click.prevent="login()" class="form__btn">
+                    Se connecter
                 </button>
 
                 <!-- inscription -->
                 <p>Vous n'avez pas de compte ?</p>
-                <button class="form__btn form__btn--signup">
+                <button
+                    class="form__btn form__btn--signup"
+                    @click.prevent="toggleModale"
+                >
                     Créez un compte
                 </button>
             </form>
+            <modaleSignup
+                :class="{ 'enter-active': revele, 'out-active': animReverse }"
+                :revele="revele"
+                :toggleModale="toggleModale"
+            />
         </div>
     </main>
 </template>
 
 <script>
 import headerNav from "../components/HeaderLogin";
+
 import axios from "axios";
+import modaleSignup from "../components/ModaleSignup.vue";
 export default {
     name: "login",
-    components: {
-        headerNav,
-    },
+
     data() {
         return {
             user: {
                 email: "",
                 password: "",
             },
-            token:""
+            token: "",
+            revele: false,
+            animReverse: false,
         };
     },
+    components: {
+        headerNav,
+        modaleSignup,
+    },
     methods: {
-        login: function() {
+        toggleModale() {
+            if (!this.revele) {
+                this.revele = !this.revele;
+            } else {
+                this.animReverse = !this.animReverse;
+                setTimeout(() => {
+                    (this.revele = !this.revele),
+                        (this.animReverse = !this.animReverse);
+                }, 500);
+            }
+        },
+        login() {
             axios
                 .post("http://localhost:3000/api/auth/login", this.user)
                 .then((res) => {
-                    localStorage.setItem("token", JSON.stringify(res.data.token))
-                    
+                    localStorage.setItem("token",res.data.token);
+                    localStorage.setItem("userId", res.data.userId);
+                    this.$router.push('/home')
                 })
                 .catch((error) => console.log(error));
-        },
+        }
     },
 };
 </script>
@@ -87,10 +113,10 @@ export default {
 <style lang="scss" scoped>
 h1 {
     margin: 0.5rem;
-    font-size: 1.4rem;
+    font-size: 1.6rem;
 }
-main > p {
-    white-space: nowrap;
+.info {
+    margin: 0.6rem;
 }
 
 .container {
@@ -112,8 +138,8 @@ main > p {
         }
         &__input {
             padding: 0.3rem;
-            border: solid 2px #0d6efd;
-            border-radius: 5px;
+            border: solid 1px #6c757d;
+            border-radius: 0.3rem;
             font-size: 1rem;
             font-family: Helvetica, sans-serif;
             &:focus {
@@ -123,19 +149,55 @@ main > p {
         }
     }
     &__btn {
+        cursor: pointer;
         padding: 0.3rem 0.4rem;
-        border: none;
+        border: 2px solid transparent;
         background: #0d6efd;
         color: white;
-        border-radius: 5px;
+        border-radius: 0.3rem;
         font-size: 1rem;
         margin: 1rem 0;
+        &:focus {
+            outline: none;
+            border-color: black;
+        }
+        &:hover {
+            background: darken($color: #0d6efd, $amount: 15);
+        }
         &--signup {
             background: #198754;
+            &:hover {
+                background: darken($color: #198754, $amount: 15);
+            }
         }
     }
     & > p {
         margin-top: 1rem;
+    }
+}
+
+</style>
+<style>
+.enter-active {
+    animation: appare .5s;
+}
+@keyframes appare {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+.out-active {
+    animation: dispare 0.5s;
+}
+@keyframes dispare {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
     }
 }
 </style>
