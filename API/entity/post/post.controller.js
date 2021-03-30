@@ -7,7 +7,7 @@ const fs = require("fs");
 
 
 exports.getAllPost = (req, res, next) => {
-    Post.findAll({include :["comments"]})
+    Post.findAll( {order: [["createdAt", "desc"]], include: "comments" })
     .then( data => {
         if (data.length == 0){
             return res.status(404).json("aucun post n'à été touver")
@@ -21,7 +21,7 @@ exports.createPost = (req, res, next) => {
     console.log(req.body);
     const postObject = req.file ? {
         ...req.body,
-        imageUrl: `${req.protocol}://${req.get("host")}/API/images/${req.file.filename}`
+        imageUrl: `${req.protocol}://${req.get("host")}/images/${req.file.filename}`
     } : { ...req.body } //op ternaire
     Post.create ({
         ...postObject
@@ -34,7 +34,7 @@ exports.modifyPost = (req, res, next) => {
     const postId = req.params.id;
     const postObject = req.file ? {
         ...req.body,
-        imageUrl: `${req.protocol}://${req.get("host")}/API/images/${req.file.filename}`
+        imageUrl: `${req.protocol}://${req.get("host")}/images/${req.file.filename}`
     } : { ...req.body } //op ternaire
     
     if (req.file) {

@@ -21,7 +21,7 @@ app.use(cors());
 
 app.use(express.json());
 
-app.use("API/images", express.static(path.join(__dirname, "images")));
+app.use("/images", express.static(path.join(__dirname, "images")));
 
 app.get("/", (req, res ) => res.json({message : "Bienvenue sur le réseau groupomania"}))
 
