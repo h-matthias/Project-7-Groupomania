@@ -7,6 +7,18 @@ const db = require ("../models/index");
 const User = db.user;
 
 
+exports.getUser = (req, res, next) => {
+    User.findOne({where: { id: parseInt(req.params.id)}})
+    .then(user => {
+        user
+        res.status(200).json({
+            name: `${user.lastname.toUpperCase()} ${user.firstname.charAt(0).toUpperCase() + user.firstname.slice(1)}`,
+            initial: user.lastname[0].toUpperCase() + user.firstname[0].toUpperCase()
+        })
+    })
+    .catch(error => res.status(400).json( error ))
+}
+
 exports.signup = (req, res, next) => {
     User.findOne({ where: {email: req.body.email}})
     .then(user => {
@@ -37,11 +49,11 @@ exports.login = ( req, res, next ) => {
             .then(valid => {
                 if (valid){
                     res.status(200).json({ 
-                        // userId : user.id,
-                        // userRole: user.role,
+                        userId : user.id,
+                        //userRole: user.role,
                         // userEmail: user.email,
                         token: jwt.sign(
-                        { userId : user.id, userRole: user.role, userEmail: user.email},
+                        { userId : user.id},
                         process.env.JWT_PASS,
                         { expiresIn: "24h" }                        
                         )
