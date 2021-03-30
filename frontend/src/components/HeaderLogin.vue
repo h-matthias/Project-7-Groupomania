@@ -7,9 +7,6 @@
             <li class="nav__list__item">
                 <router-link class="nav-link" to="/">Se connecter</router-link>
             </li>
-            <li class="nav__list__item">
-                <router-link class="nav-link" to="/signup">S'inscrire</router-link>
-            </li>
         </ul>
         
     </nav>
@@ -24,12 +21,14 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .nav{
+    position: fixed;
+    background: white;
     width: 100%;
     display: flex;
     flex-wrap: wrap;
-    flex-grow: 2;
+    //flex-grow: 1;
     justify-content: space-between;
     padding: .5rem;
     
@@ -40,37 +39,19 @@ export default {
     }
     &__list{
         display: flex;
-        justify-content: space-around;
+        justify-content: space-between;
         align-items: center;
-        margin-right: 5rem;
+        
         &__item{
-            margin: 0 2rem;
+            margin: auto 1rem;
             border-bottom: transparent 2px solid;
         }
-    }
-}
-.nav-link{
-    display: inline-block;
-    position: relative;
-    &:not(.router-link-active)::before{
-        content: "";
-        position: absolute;
-        bottom: 0;
-        width: 100%;
-        height: 2px;
-        background: #333;
-        transform-origin: 100% 0;
-        transform: scaleX(0);
-        transition: transform 0.4s;
-    }
-    &:hover:not(.router-link-active)::before{
-        transform: scaleX(1);
-        transform-origin: 0 0;
     }
 }
 
 
 .router-link-active{
+    position: relative;
     cursor: default;
     &::before{
         content: "";
@@ -83,15 +64,16 @@ export default {
 }
 
 
-@media (max-width:600px){
-    .nav__logo{
-        width: 100%;
-    }
+@media (max-width:680px){
+    
     .nav__list{
         margin: 0;
         margin-top: 1rem;
         padding-bottom: 1rem;
         width: 100%;
+        &__item{
+            margin: 0;
+        }
     }
 } 
 
