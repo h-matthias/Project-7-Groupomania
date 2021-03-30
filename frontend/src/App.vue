@@ -28,10 +28,17 @@ li{
     -moz-osx-font-smoothing: grayscale;
 }
 main{
+    padding-top: 5rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    width: 100%;
 }
+ @media (max-width:680px) {
+        main{
+            padding-top: 8rem;
+        }
+    }
 
 </style>
