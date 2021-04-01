@@ -29,6 +29,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+nav{
+    z-index: 1;
+}
     button{
         cursor: pointer;
         border: none;
