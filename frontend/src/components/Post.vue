@@ -51,25 +51,25 @@ export default {
     methods: {
         loadPost(){
             //console.log(this.userId);
-            axios.get("http://localhost:3000/api/post", {"headers": {"Authorization": this.token}},)
-        .then( res => {
-            this.posts = res.data;
-        })
-        .then(() => {
-            for (const post of this.posts) {
-                //formatage de lheure;
-                let date = post.createdAt.split("T")[0].split("-").reverse().join("/");
-                let heure = post.createdAt.split("T")[1].split(":")[0];
-                let minute = post.createdAt.split("T")[1].split(":")[1];
-                post["createdAt"] = `${date} ${heure}:${minute}`;
-                axios.get("http://localhost:3000/api/auth/"+ post.userId)
-                .then(res => {
-                    post["user"] = res.data;
-                })
-                .catch(err => console.log({err}))
-            }
-        })
-        .catch(error => console.log({error}))
+            axios.get("http://localhost:3000/api/post", {"headers": {"Authorization": this.token}})
+            .then( res => {
+                this.posts = res.data;
+            })
+            .then(() => {
+                for (const post of this.posts) {
+                    //formatage de lheure;
+                    let date = post.createdAt.split("T")[0].split("-").reverse().join("/");
+                    let heure = post.createdAt.split("T")[1].split(":")[0];
+                    let minute = post.createdAt.split("T")[1].split(":")[1];
+                    post["createdAt"] = `${date} ${heure}:${minute}`;
+                    axios.get("http://localhost:3000/api/auth/"+ post.userId)
+                    .then(res => {
+                        post["user"] = res.data;
+                    })
+                    .catch(err => console.log({err}))
+                }
+            })
+            .catch(error => console.log({error}))
         },
        
     }
@@ -126,6 +126,7 @@ export default {
                 padding: .5rem 0;
                 & p{
                     white-space: pre-line;
+                    word-wrap: break-word;
                 }
             }
             & img{
