@@ -92,7 +92,7 @@ export default {
                 this.animReverse = !this.animReverse;
                 setTimeout(() => {
                     (this.revele = !this.revele),
-                        (this.animReverse = !this.animReverse);
+                    (this.animReverse = !this.animReverse);
                 }, 500);
             }
         },
