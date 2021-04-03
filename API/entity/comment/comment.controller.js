@@ -21,6 +21,6 @@ exports.modifyComment = (req, res, next) => {
 exports.deleteComment = (req, res, next) => {
     const commentId = req.params.id;
     Comment.destroy( {where: {id: commentId}})
-    .then( data => res.status(201).json(`commentaire modifier : ${data.comment}`))
+    .then( data => res.status(201).json(`commentaire supprimer : ${data.comment}`))
     .catch( error => res.status(400).json({error}))
 };
