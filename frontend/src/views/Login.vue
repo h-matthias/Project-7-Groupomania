@@ -16,7 +16,10 @@
                 <!-- login -->
                 <div class="form__group">
                     <label class="form__group__label" for="email"
-                        >Votre Email :</label
+                        >Votre Email :
+                        <span class="error" v-if="error.email">{{
+                            error.email
+                        }}</span></label
                     >
                     <input
                         class="form__group__input"
@@ -28,7 +31,10 @@
                 </div>
                 <div class="form__group">
                     <label class="form__group__label" for="password"
-                        >Votre mot de passe :</label
+                        >Votre mot de passe :
+                        <span class="error" v-if="error.pass">{{
+                            error.pass
+                        }}</span></label
                     >
                     <input
                         class="form__group__input"
@@ -75,6 +81,10 @@ export default {
                 email: "",
                 password: "",
             },
+            error: {
+                email: "",
+                pass: "",
+            },
             token: "",
             revele: false,
             animReverse: false,
@@ -92,20 +102,32 @@ export default {
                 this.animReverse = !this.animReverse;
                 setTimeout(() => {
                     (this.revele = !this.revele),
-                    (this.animReverse = !this.animReverse);
+                        (this.animReverse = !this.animReverse);
                 }, 500);
             }
         },
         login() {
-            axios
-                .post("http://localhost:3000/api/auth/login", this.user)
-                .then((res) => {
-                    localStorage.setItem("token",res.data.token);
-                    localStorage.setItem("userId", res.data.userId);
-                    this.$router.push('/home')
-                })
-                .catch((error) => console.log(error));
-        }
+            if (this.user.email === "") {
+                this.error.email = "Entrez un email.";
+            } else {
+                axios
+                    .post("http://localhost:3000/api/auth/login", this.user)
+                    .then((res) => {
+                        localStorage.setItem("token", res.data.token);
+                        localStorage.setItem("userId", res.data.userId);
+                        this.$router.push("/home");
+                    })
+                    .catch((err) => {
+                        if (
+                            err.response.data.error == "mot de passe incorrect"
+                        ) {
+                            this.error.pass = err.response.data.error;
+                        } else {
+                            this.error.email = err.response.data.error;
+                        }
+                    });
+            }
+        },
     },
 };
 </script>
@@ -175,11 +197,14 @@ h1 {
         margin-top: 1rem;
     }
 }
-
+.error {
+    font-size: 0.8rem;
+    color: #dc3545;
+}
 </style>
 <style>
 .enter-active {
-    animation: appare .5s;
+    animation: appare 0.5s;
 }
 @keyframes appare {
     0% {
