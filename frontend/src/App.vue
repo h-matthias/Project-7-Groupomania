@@ -27,6 +27,7 @@ li{
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
+
 main{
     padding-top: 5rem;
     display: flex;
@@ -36,9 +37,9 @@ main{
     width: 100%;
 }
  @media (max-width:680px) {
-        main{
-            padding-top: 8rem;
-        }
+    main{
+        padding-top: 8rem;
     }
+}
 
 </style>
