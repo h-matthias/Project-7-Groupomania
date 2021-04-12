@@ -3,7 +3,21 @@
     <nav class="nav">
         <img class="nav__logo" src="../assets/logo-mono.svg" alt="logo groupomania">
         
-        <ul class="nav__list">
+        <ul class="nav__list" v-if="hasConnect">
+            <li class="nav__list__item">
+                <router-link to="/home">Acceuil</router-link>
+            </li>
+            <li class="nav__list__item">
+                <router-link to="/account">Mon compte</router-link>
+            </li>
+            <li class="nav__list__item">
+                 <button @click="logout">
+                    Se deconnecter
+                </button>
+            </li>
+        </ul>
+
+        <ul class="nav__list" v-else>
             <li class="nav__list__item">
                 <router-link class="nav-link" to="/">Se connecter</router-link>
             </li>
@@ -16,13 +30,42 @@
 
 <script>
 export default {
-    name: "headerNav"
+    name: "headerNav",
+    data() {
+        return {
+            hasConnect: false,
+        }
+    },
+    computed: {
+        verifConected: function () {
+            return this.hasConnect
+        }
+    },
+    mounted() {
+        this.isConnected()
+    },
+    methods: {
+
+        isConnected () {
+            if (localStorage.getItem("token") && localStorage.getItem("userId")){
+                this.hasConnect = true
+            } else {
+                this.hasConnect = false
+            }
+        },
+        logout() {
+            localStorage.removeItem("token");
+            localStorage.removeItem("userId");
+            this.$router.go("/");
+        }
+    }
 
 }
 </script>
 
 <style lang="scss">
 .nav{
+    z-index: 1;
     position: fixed;
     background: white;
     width: 100%;
@@ -49,6 +92,12 @@ export default {
     }
 }
 
+button{
+    cursor: pointer;
+    border: none;
+    background: none;
+    font-size: 1rem;
+}
 
 .router-link-active{
     position: relative;
