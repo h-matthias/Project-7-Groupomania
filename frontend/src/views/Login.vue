@@ -1,9 +1,6 @@
 <template>
-    <header>
-        <headerNav />
-    </header>
 
-    <main>
+    <div>
         <div>
             <h1>Bienvenue sur le résau social de <span>Groupomania</span>.</h1>
             <p class="info">Réserve aux employé</p>
@@ -64,11 +61,11 @@
                 :toggleModale="toggleModale"
             />
         </div>
-    </main>
+    </div>
 </template>
 
 <script>
-import headerNav from "../components/HeaderLogin";
+
 
 import axios from "axios";
 import modaleSignup from "../components/ModaleSignup.vue";
@@ -77,6 +74,7 @@ export default {
 
     data() {
         return {
+            connected: false,
             user: {
                 email: "",
                 password: "",
@@ -91,10 +89,17 @@ export default {
         };
     },
     components: {
-        headerNav,
         modaleSignup,
     },
+    mounted() {
+        this.isConnected()
+    },
     methods: {
+        isConnected () {
+            if (localStorage.getItem("token") && localStorage.getItem("userId")){
+                this.$router.push("/home")
+            }
+        },
         toggleModale() {
             if (!this.revele) {
                 this.revele = !this.revele;
@@ -115,7 +120,7 @@ export default {
                     .then((res) => {
                         localStorage.setItem("token", res.data.token);
                         localStorage.setItem("userId", res.data.userId);
-                        this.$router.push("/home");
+                        this.$router.go("/home");
                     })
                     .catch((err) => {
                         if (
@@ -128,8 +133,8 @@ export default {
                     });
             }
         },
-    },
-};
+    }
+}
 </script>
 
 <style lang="scss" scoped>

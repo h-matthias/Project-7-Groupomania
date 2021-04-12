@@ -1,16 +1,25 @@
 <template>
-    <router-view />
+    <header>
+        <headerNav />
+    </header>
+    <main>
+        <router-view />
+    </main>
 </template>
 
 <script>
+import headerNav from './components/HeaderNav';
 export default {
+    components: {
+        headerNav
+    }
    
 };
 </script>
 
 
 <style lang="scss">
-*, *::before, *::after{
+*, ::before, ::after{
     box-sizing: border-box;
     padding: 0;
     margin: 0;
