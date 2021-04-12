@@ -1,10 +1,10 @@
 <template>
-    <div class="carte">
-        <div class="carte__profil">
-            <div class="carte__profil__initial-user">
+    <div class="card">
+        <div class="card__profil">
+            <div class="card__profil__initial-user">
                 <p>{{ user.initial }}</p>
             </div>
-            <div class="carte__profil__name">
+            <div class="card__profil__name">
                 <p>
                     {{ user.name }}
                 </p>
@@ -42,7 +42,6 @@
                 >
             </div>
             <p class="file-return" v-if="image != null" >
-                <!-- Votre image : {{ nameImage.split("fakepath\\")[1] }} -->
                 votre image : {{ image.name}}
             </p>
             <button @click.prevent="sendPost()" class="btn" type="submit">Envoyer</button>
@@ -54,14 +53,16 @@
 import axios from "axios";
 export default {
     name: "formPost",
-    props: [ "token", "userId"],
+
     data() {
         return {
             user: {},
             image: null,
             contentPost: "",
             formPost: {},
-            errorContentPost: false
+            errorContentPost: false,
+            token: "Bearer " + localStorage.getItem("token"),
+            userId: localStorage.getItem("userId"),
         };
     },
     mounted() {
@@ -123,14 +124,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.carte {
+.card {
     width: 95%;
     max-width: 600px;
     margin: 0.5rem 0;
     min-height: 10rem;
     border: #f1f1f1 solid 1px;
-    box-shadow: 1px 1px 4px;
+    box-shadow: 1px 1px 2px;
     padding: 0.5rem;
+    border-radius: .5rem;
     &__profil {
         display: flex;
         padding-bottom: 0.3rem;
@@ -172,15 +174,15 @@ export default {
     padding: 0.5rem;
     position: relative;
     &__group {
+        display: flex;
+        flex-direction: column;
+        margin: 0.5rem 0;
         &--file {
             width: 9rem;
             height: 1.4rem;
             margin: 0;
             position: relative;
         }
-        display: flex;
-        flex-direction: column;
-        margin: 0.5rem 0;
         &__label {
             margin-bottom: 0.2rem;
             &--file {
@@ -195,6 +197,8 @@ export default {
                 width: 9rem;
                 text-align: center;
                 padding: 0.3rem;
+                 transition: all 0.2s linear;
+                 border-radius: .3rem;
                 &:hover {
                     background: darken($color: #198754, $amount: 15);
                 }
@@ -240,7 +244,7 @@ export default {
     font-size: 0.8rem;
 }
 textarea{
-    resize: none;
+    resize: vertical;
 }
 .errorPost{
     border-color: red;
@@ -257,6 +261,7 @@ textarea{
     border-radius: 0.3rem;
     font-size: 1rem;
     margin: 0.3rem 0;
+     transition: all 0.2s linear;
     &:focus {
         outline: none;
         border-color: black;
