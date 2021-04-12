@@ -4,33 +4,40 @@
                 :revele="revele"
                 :toggleModale="toggleModale" :mode="mode" :id="id"/>
     <li v-for="post in posts" :key="post.id"  >
-        <div class="carte">
-            <div class="carte__profil" >
-                <div class="carte__profil__initial-user">
-                   <p>  {{ user.initial }} </p>
+        <div class="card">
+            <div v-if="post.user" class="card__profil" >
+                <div class="card__profil__initial-user">
+                   <p>  {{ post.user.initial }} </p>
                 </div>
-                <div class="carte__profil__info">
-                    <p class="carte__profil__info__name">               
-                        {{ user.name }}
+                <div class="card__profil__info">
+                    <p class="card__profil__info__name">               
+                        {{ post.user.name }}
                     </p>
-                    <p class="carte__profil__info__date-publish">
-                        {{post.createdAt}} {{( post.createAt === post.updateAt) ? "": " Modifié" }}
+                    <p class="card__profil__info__date-publish">
+                        {{ post.createdAt }} {{ post.createdAt === post.updatedAt ? "": "Modifié" }}
                     </p>
                 </div>
-                <div v-if="parseInt(userId) === post.userId" class="carte__profil__option">
+                <div v-if="parseInt(userId) === post.userId" class="card__profil__option">
                         <button @click="deletePost(post.id)" class="btn btn--delete">Supprimer</button>
                         <button @click="modifyPost(post.id)" class="btn btn--modify">Modifier</button>
                 </div>
-                
             </div>
-            <div class="carte__content">
-                <div class="carte__content__post">
+            <div v-else>
+                <p>Erreur de chargement des informations sur l'utilisateur de la publication.</p>
+            </div>
+            <div class="card__content">
+                <div class="card__content__post">
                     <p>
-                        {{post.contentPost}}
+                        {{ post.contentPost }}
                     </p>
                 </div>
-                <img v-if="post.imageUrl" class="carte__content__image" :src="post.imageUrl" :alt="  `image publié par ${user.name}`">
+                <img v-if="post.imageUrl" class="card__content__image" :src="post.imageUrl" :alt="  `image publié par ${post.user ? post.user.name:'' }`">
                 
+            </div>
+            <div class="card__comment">
+                <hr>
+                
+                <formComment :postId="post.id"/>
             </div>
         </div>
     </li>         
@@ -38,13 +45,16 @@
 </template>
 
 <script>
-import axios from "axios"
-import modaleDelete from "../components/ModaleConfirmationDelete"
+import axios from "axios";
+import modaleDelete from "../components/ModaleConfirmationDelete";
+import formComment from "../components/FormComment"
+
 export default {
     name: "post",
-    props: ["token", "userId"],
     components: {
-        modaleDelete
+        modaleDelete,
+        formComment
+       
     },
     data() {
         return {
@@ -53,33 +63,33 @@ export default {
             id: "",
             mode:"",
             animReverse: false,
-            user:{}
+            token: "Bearer " + localStorage.getItem("token"),
+            userId: localStorage.getItem("userId"),
         }
     },
     mounted() {
-        
         this.loadPost();
-            
-        
     },
 
     methods: {
         loadPost(){
-            //console.log(this.userId);
-            axios.get("http://localhost:3000/api/post", {"headers": {"Authorization": this.token}}, this.userId)
+            axios.get("http://localhost:3000/api/post", {"headers": {"Authorization": this.token}})
             .then( res => {
                 this.posts = res.data;
-            })
-            .then(() => {
                 for (const post of this.posts) {
-                    //formatage de l'heure;
+                    //formatage de l'heure de création;
                     let date = post.createdAt.split("T")[0].split("-").reverse().join("/");
                     let heure = post.createdAt.split("T")[1].split(":")[0];
                     let minute = post.createdAt.split("T")[1].split(":")[1];
                     post["createdAt"] = `${date} ${heure}:${minute}`;
+                    //formatage de l'heure de mise à jour;
+                    date = post.updatedAt.split("T")[0].split("-").reverse().join("/");
+                    heure = post.updatedAt.split("T")[1].split(":")[0];
+                    minute = post.updatedAt.split("T")[1].split(":")[1];
+                    post["updatedAt"] = `${date} ${heure}:${minute}`;
                     axios.get("http://localhost:3000/api/auth/"+ post.userId)
                     .then(res => {
-                        this.user = res.data;
+                        post["user"] = res.data;
                     })
                     .catch(err => console.log({err}))
                 }
@@ -94,7 +104,6 @@ export default {
         modifyPost(id){
             this.mode = "post"
             this.id = id;
-
         },
         toggleModale() {
             if (!this.revele) {
@@ -125,11 +134,12 @@ export default {
         max-width: 600px;
         margin: .5rem 0;
     }
-    .carte{
+    .card{
         min-height: 10rem;
         border: #f1f1f1 solid 1px;
-        box-shadow: 1px 1px 4px;
+        box-shadow: 1px 1px 2px;
         padding: .5rem;
+        border-radius: .5rem;
         &__profil {
             display: flex;
             padding-bottom: .3rem;
@@ -188,6 +198,8 @@ export default {
         border-radius: 0.3rem;
         font-size: .8rem;
         margin-left: .3rem;
+        box-shadow: 1px 1px 5px;
+         transition: all 0.2s linear;
         &:focus {
             outline: none;
             border-color: black;
@@ -203,7 +215,7 @@ export default {
         }
     }
     @media (max-width:500px) {
-        .carte__profil__option{
+        .card__profil__option{
             flex-direction: column;
         }
         .btn{
