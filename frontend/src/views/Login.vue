@@ -120,9 +120,11 @@ export default {
                     .then((res) => {
                         localStorage.setItem("token", res.data.token);
                         localStorage.setItem("userId", res.data.userId);
-                        this.$router.go("/home");
+                        this.userCurrent();
+                        this.$router.go("/home")
                     })
                     .catch((err) => {
+                        console.log({err});
                         if (
                             err.response.data.error == "mot de passe incorrect"
                         ) {
@@ -133,6 +135,14 @@ export default {
                     });
             }
         },
+        userCurrent() {
+            axios
+                .get("http://localhost:3000/api/auth/" + localStorage.getItem("userId"))
+                    .then((user) => {console.log({user});
+                        localStorage.setItem("userCurrent", JSON.stringify(user.data))
+                    })
+                    .catch(err => console.log({err}))
+        }
     }
 }
 </script>
