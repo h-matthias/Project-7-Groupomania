@@ -36,6 +36,10 @@ li{
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
+body{
+    background: #f3f3f3;
+    height: 100vh;
+}
 
 main{
     padding-top: 5rem;
@@ -44,6 +48,7 @@ main{
     justify-content: center;
     align-items: center;
     width: 100%;
+    
 }
  @media (max-width:680px) {
     main{
