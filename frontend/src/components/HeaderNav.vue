@@ -56,6 +56,7 @@ export default {
         logout() {
             localStorage.removeItem("token");
             localStorage.removeItem("userId");
+            localStorage.removeItem("userCurrent");
             this.$router.go("/");
         }
     }
