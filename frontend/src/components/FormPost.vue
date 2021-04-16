@@ -125,6 +125,7 @@ export default {
 
 <style lang="scss" scoped>
 .card {
+    background: white;
     width: 95%;
     max-width: 600px;
     margin: 0.5rem 0;
@@ -142,7 +143,8 @@ export default {
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            border: 1px solid black;
+            box-shadow: 1px 1px 5px;
+            //border: 1px solid black;
             margin-right: 1rem;
             & p {
                 font-size: 1.2rem;
