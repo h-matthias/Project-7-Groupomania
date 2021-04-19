@@ -84,7 +84,7 @@ export default {
         &__group {
             width: 100%;
             display: flex;
-            align-items: flex-start;
+            align-items: baseline;
             margin: 0.5rem 0;
             &__input {
                 flex-grow: 1;
@@ -92,7 +92,7 @@ export default {
                 padding: 0.3rem;
                 border: solid 1px #6c757d;
                 border-radius: 0.3rem;
-                font-size: 1rem;
+                font-size: .8rem;
                 font-family: Helvetica, sans-serif;
                 overflow: visible;
                 &:focus {
@@ -102,9 +102,10 @@ export default {
             }
             &__profil {
                 flex-shrink: 0;
-                width: 2rem;
-                height: 2rem;
+                width: 1.5rem;
+                height: 1.5rem;
                 margin-right: .5rem;
+                font-size: .8rem;
                 display: flex;
                 box-shadow: 1px 1px 5px;
                 //border:  1px solid black;
@@ -117,31 +118,31 @@ export default {
         }
     }
     .btn {
-    bottom: 0;
-    right: 0.5rem;
-    cursor: pointer;
-    padding: 0.1rem 0.6rem;
-    border: 2px solid transparent;
-    background: #0d6efd;
-    color: white;
-    border-radius: 0.3rem;
-    font-size: 1rem;
-    margin: 0.3rem 0;
-    transition: all 0.2s linear;
-    align-self: flex-end;
-    &:focus {
-        outline: none;
-        border-color: black;
+        bottom: 0;
+        right: 0.5rem;
+        cursor: pointer;
+        padding: 0.1rem 0.6rem;
+        border: 2px solid transparent;
+        background: #0d6efd;
+        color: white;
+        border-radius: 0.3rem;
+        font-size: 1rem;
+        margin: 0.3rem 0;
+        transition: all 0.2s linear;
+        align-self: flex-end;
+        &:focus {
+            outline: none;
+            border-color: black;
+        }
+        &:hover {
+            background: darken($color: #0d6efd, $amount: 15);
+        }
     }
-    &:hover {
-        background: darken($color: #0d6efd, $amount: 15);
-    }
-}
     textarea{
         resize: vertical;
     }
     .errorComment{
-    border-color: red;
-}
+        border-color: red;
+    }
 
 </style>
