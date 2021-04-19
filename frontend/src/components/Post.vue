@@ -1,12 +1,21 @@
 <template>
 <ul>
-    <modale-delete 
+    <ModaleConfirmationDelete 
         :class="{ 'enter-active': revele, 'out-active': animReverse }"
         :revele="revele"
         :toggleModale="toggleModale" 
         :mode="mode" 
         :id="id"
+        :action="action"
     />
+    <ModifyPostOrComment 
+        :class="{ 'enter-active': revele, 'out-active': animReverse }"
+        :revele="revele"
+        :toggleModale="toggleModale" 
+        :mode="mode" 
+        :id="id"
+        :action="action"
+        />
     <li v-for="post in posts" :key="post.id"  >
         <div class="card">
             <div v-if="post.user" class="card__profil" >
@@ -46,13 +55,13 @@
             <p style="font-size:.8rem; margin-top: .8rem">
                {{ post.comments.length}} Commentaires
             </p>
-            <comments 
+            <Comments
                 :comments="post.comments" 
                 :userId="userId" 
                 @deleteCom="deleteComment($event)" 
                 @modifyCom="modifyComment($event)"
             />
-            <formComment :postId="post.id"/>
+            <FormComment :postId="post.id"/>
           
         </div>
     </li>         
@@ -61,17 +70,19 @@
 
 <script>
 import axios from "axios";
-import modaleDelete from "./ModaleConfirmationDelete";
-import formComment from "./FormComment"
-import comments from "./Comment"
+import ModaleConfirmationDelete from "./ModaleConfirmationDelete";
+import FormComment from "./FormComment"
+import Comments from "./Comment"
+import ModifyPostOrComment from "./ModifyPostOrComment"
 
 
 export default {
     name: "post",
     components: {
-        modaleDelete,
-        formComment,
-        comments
+        ModaleConfirmationDelete,
+        ModifyPostOrComment,
+        FormComment,
+        Comments,
     },
     data() {
         return {
@@ -79,6 +90,7 @@ export default {
             revele: false,
             id: "",
             mode:"",
+            action:"",
             animReverse: false,
             token: "Bearer " + localStorage.getItem("token"),
             userId: localStorage.getItem("userId"),
@@ -122,18 +134,26 @@ export default {
         deletePost(id) {
             this.mode = "post";
             this.id = id;
-            this.revele=true
+            this.action="delete";
+            this.revele=true;
         },
         modifyPost(id){
-            this.mode = "post"
+            this.mode = "post";
             this.id = id;
+            this.action="modify";
+            this.revele=true;
         },
         deleteComment($event){
             this.mode = "comment";
+            this.action="delete";
             this.id = $event;
             this.revele= true;
         },
         modifyComment($event){
+            this.action="modify";
+            this.mode = "comment";
+            this.id = $event;
+            this.revele=true;
             console.log($event);
         },
         toggleModale() {
@@ -151,7 +171,7 @@ export default {
             let date = time.split("T")[0].split("-").reverse().join("/");
             let heure = time.split("T")[1].split(":")[0];
             let minute = time.split("T")[1].split(":")[1];
-            return `${date} ${heure}:${minute}`
+            return `${date} ${heure}:${minute}`;
         },
     }
 }
