@@ -55,7 +55,7 @@
                     Créez un compte
                 </button>
             </form>
-            <modaleSignup
+            <ModaleSignup
                 :class="{ 'enter-active': revele, 'out-active': animReverse }"
                 :revele="revele"
                 :toggleModale="toggleModale"
@@ -68,7 +68,7 @@
 
 
 import axios from "axios";
-import modaleSignup from "../components/ModaleSignup.vue";
+import ModaleSignup from "../components/ModaleSignup.vue";
 export default {
     name: "login",
 
@@ -89,7 +89,7 @@ export default {
         };
     },
     components: {
-        modaleSignup,
+        ModaleSignup,
     },
     mounted() {
         this.isConnected()

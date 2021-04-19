@@ -1,18 +1,18 @@
 <template>
-        <formPost />
-        <post />
+        <FormPost />
+        <Post />
 </template>
 
 <script>
 
-import post from "../components/Post"
-import formPost from "../components/FormPost"
+import Post from "../components/Post"
+import FormPost from "../components/FormPost"
 export default {
     name: "home",
     components:{
 
-        formPost,
-        post
+        FormPost,
+        Post
     },
     mounted() {
         this.isConnected()
