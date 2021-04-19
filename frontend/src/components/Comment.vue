@@ -118,34 +118,34 @@ export default {
     }
 }
 .btn {
-        cursor: pointer;
-        padding: 0.2rem 0.2rem;
-        border: 2px solid transparent;
-        background: #dc3545;
-        color: white;
-        border-radius: 0.3rem;
-        font-size: .7rem;
-        margin-left: .3rem;
-        box-shadow: 1px 1px 5px;
-         transition: all 0.2s linear;
-        &:focus {
-            outline: none;
-            border-color: black;
-        }
+    cursor: pointer;
+    padding: 0.2rem 0.2rem;
+    border: 2px solid transparent;
+    background: #dc3545;
+    color: white;
+    border-radius: 0.3rem;
+    font-size: .7rem;
+    margin-left: .3rem;
+    box-shadow: 1px 1px 5px;
+        transition: all 0.2s linear;
+    &:focus {
+        outline: none;
+        border-color: black;
+    }
+    &:hover {
+        background: darken($color: #dc3545, $amount: 15%);
+    }
+    &--modify {
+        background: #ffc107;
         &:hover {
-            background: darken($color: #dc3545, $amount: 15%);
-        }
-        &--modify {
-            background: #ffc107;
-            &:hover {
-                background: darken($color: #ffc107, $amount: 15%);
-            }
+            background: darken($color: #ffc107, $amount: 15%);
         }
     }
-    @media (max-width: 410px) {
-        .comment__profil__info{
-            flex-direction: column;
-        }
-        
+}
+@media (max-width: 410px) {
+    .comment__profil__info{
+        flex-direction: column;
     }
+    
+}
 </style>
