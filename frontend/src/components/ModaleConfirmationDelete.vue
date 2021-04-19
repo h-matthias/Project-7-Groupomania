@@ -1,6 +1,6 @@
 <template>
-    <div class="bloc-modale" v-if="revele">
-        <div class="overlay"></div>
+    <div class="bloc-modale" v-if="revele && action=='delete'">
+        <div class="overlay" @click="toggleModale"></div>
         <div class="modale">
             <h2 class="modale__title">
                 Ete-vous sur de vouloir supprimer votre
@@ -23,7 +23,7 @@
 import axios from "axios";
 export default {
     name: "delete",
-    props: ["revele", "mode", "id", "toggleModale"],
+    props: ["revele", "mode", "id", "toggleModale", "action"],
     data() {
         return {
             reponse: "",
@@ -74,8 +74,8 @@ export default {
     color: #333;
     position: fixed;
     padding: 1.3rem;
-    min-width: 310px;
-    width: 45%;
+width: 95%;
+    max-width: 600px;
     border-radius: 0.3rem;
     display: flex;
     flex-direction: column;
