@@ -5,14 +5,12 @@ module.exports = (req, res , next) => {
     try {
         const token = req.headers.authorization.split(" ")[1];
         const decodeToken = jwt.verify( token, process.env.JWT_PASS );
-        const userId = parseInt(decodeToken.userId);
-        const userRole = parseInt(decodeToken.userRole);
+        const userId = decodeToken.userId;
         
-        if (( req.body.userId && req.body.userId === userId ) 
-            || ( req.body.userRole && req.body.userRole === userRole )){
-            next()
-        } else {
+        if ( req.body.userId && req.body.userId !== userId ){
             throw "utilisateur non identifer";
+        } else {
+            next();
         }
     } catch (error) {
         console.log(error);

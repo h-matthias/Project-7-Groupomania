@@ -10,8 +10,9 @@ const User = db.user;
 exports.getUser = (req, res, next) => {
     User.findOne({where: { id: parseInt(req.params.id)}})
     .then(user => {
-        user
+        
         res.status(200).json({
+            
             name: `${user.lastname.toUpperCase()} ${user.firstname.charAt(0).toUpperCase() + user.firstname.slice(1)}`,
             initial: user.lastname[0].toUpperCase() + user.firstname[0].toUpperCase()
         })
