@@ -117,7 +117,7 @@
 <script>
 import axios from "axios";
 export default {
-    props: ["revele", "toggleModale"],
+    props: ["revele", "toggleModale", "userCurrent"],
     name: "modaleSignup",
     data() {
         return {
@@ -210,7 +210,7 @@ export default {
                 axios
                     .post("http://localhost:3000/api/auth/signup", this.user)
                     .then(() => {
-                        //Todo mettre en place le routeur de conection automatique
+                        this.loginAfterRegister();
                     })
                     .catch(
                         (error) =>{
@@ -225,12 +225,11 @@ export default {
             axios
                 .post("http://localhost:3000/api/auth/login", this.user)
                 .then((res) => {
-                    localStorage.setItem(
-                        "token",
-                        JSON.stringify(res.data.token)
-                    );
-                    //this.$router.push('/post')
-                });
+                    localStorage.setItem("token", res.data.token);
+                    localStorage.setItem("userId", res.data.userId);
+                    this.userCurrent();
+                    this.$router.push("/home")   
+                })
         },
     },
 };
