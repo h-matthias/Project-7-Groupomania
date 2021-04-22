@@ -1,6 +1,6 @@
 <template>
 
-    <div>
+    <div class="bloc-page">
         <div>
             <h1>Bienvenue sur le résau social de <span>Groupomania</span>.</h1>
             <p class="info">Réserve aux employé</p>
@@ -59,6 +59,7 @@
                 :class="{ 'enter-active': revele, 'out-active': animReverse }"
                 :revele="revele"
                 :toggleModale="toggleModale"
+                :userCurrent="userCurrent"
             />
         </div>
     </div>
@@ -148,6 +149,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.bloc-page{
+    background: white;
+    padding: .5rem;
+    box-shadow: 1px 1px 2px;
+}
+
 h1 {
     margin: 0.5rem;
     font-size: 1.6rem;
