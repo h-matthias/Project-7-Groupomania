@@ -121,7 +121,7 @@ export default {
                     for ( const comment of post.comments ){
                         comment["createdAt"] = this.formatedTime(comment.createdAt);
                         comment["updatedAt"] = this.formatedTime(comment.updatedAt);
-                        axios.get("http://localhost:3000/api/auth/"+ post.userId)
+                        axios.get("http://localhost:3000/api/auth/"+ comment.userId)
                             .then(res => {
                                 comment["user"] = res.data;
                             })
