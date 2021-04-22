@@ -5,6 +5,8 @@ const jwt = require ("jsonwebtoken");
 
 const db = require ("../models/index");
 const User = db.user;
+const Comment = db.comment;
+const Post = db.post;
 
 
 exports.getUser = (req, res, next) => {
@@ -73,20 +75,31 @@ exports.login = ( req, res, next ) => {
     })
     .catch( error => {
         console.log(error);
-        res.status(501).json(error)})
+        res.status(501).json(error)
+    })
 };
 
 
 exports.deleteUser = (req, res, next) => {
-    const id = req.body.userId;
-    User.destroy({ where: {id:id}})
-    .then( sup => {
-        if (sup){
-            res.status(200).json("compte supprimé avec succes")
-        } else {
-            res.status(400).json("impossible de supprimé ce compte")
-        }
+    const id = req.params.id;
+    Comment.destroy({where: {userId : id}})
+    .then( () => {
+        Post.destroy({where: {userId : id}})
+        .then( () => {
+            User.destroy({ where: {id:id}})
+            .then( userSup => {
+                if (userSup){
+                    res.status(200).json("compte supprimé avec succes")
+                } else {
+                    res.status(400).json("impossible de supprimé ce compte")
+                }
+            })
+            .catch(error => res.status(500).json({error}))
+        })
+        .catch(error => res.status(500).json({error}))
     })
     .catch(error => res.status(500).json({error}))
+
+    
 
 }
