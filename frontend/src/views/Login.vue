@@ -1,5 +1,4 @@
 <template>
-
     <div class="bloc-page">
         <div>
             <h1>Bienvenue sur le résau social de <span>Groupomania</span>.</h1>
@@ -42,7 +41,7 @@
                     />
                 </div>
 
-                <button @click.prevent="login()" class="form__btn">
+                <button @click.prevent="sendForm" class="form__btn">
                     Se connecter
                 </button>
 
@@ -59,23 +58,27 @@
                 :class="{ 'enter-active': revele, 'out-active': animReverse }"
                 :revele="revele"
                 :toggleModale="toggleModale"
-                :userCurrent="userCurrent"
             />
         </div>
     </div>
 </template>
 
 <script>
-
-
-import axios from "axios";
+import { reactive, toRefs } from "vue";
+import {useStore} from 'vuex';
+import {useRouter} from 'vue-router';
 import ModaleSignup from "../components/ModaleSignup.vue";
-export default {
-    name: "login",
 
-    data() {
-        return {
-            connected: false,
+export default {
+    components: {
+        ModaleSignup,
+    },
+    setup() {
+
+        const router = useRouter()
+        const store = useStore()
+
+        const state = reactive({
             user: {
                 email: "",
                 password: "",
@@ -87,71 +90,50 @@ export default {
             token: "",
             revele: false,
             animReverse: false,
-        };
-    },
-    components: {
-        ModaleSignup,
-    },
-    mounted() {
-        this.isConnected()
-    },
-    methods: {
-        isConnected () {
-            if (localStorage.getItem("token") && localStorage.getItem("userId")){
-                this.$router.push("/home")
-            }
-        },
-        toggleModale() {
-            if (!this.revele) {
-                this.revele = !this.revele;
+        });
+        //envoie formulaire pour la connection
+        const sendForm = async () => {
+            if (state.user.email === "") {
+                state.error.email = "Entrez un email.";
             } else {
-                this.animReverse = !this.animReverse;
+                const res = await store.dispatch('users/login', state.user)
+                if (res === true) {
+                    router.push('home')
+                } else {
+                    if (res === 'mot de passe incorrect') {
+                        state.error.pass = res
+                    } else {
+                        state.error.email = res
+                    }
+                }
+            }
+        };
+        //Apparition modale inscription
+        const toggleModale = () => {
+            if (!state.revele) {
+                state.revele = !state.revele;
+            } else {
+                state.animReverse = !state.animReverse;
                 setTimeout(() => {
-                    (this.revele = !this.revele),
-                        (this.animReverse = !this.animReverse);
+                    (state.revele = !state.revele),
+                        (state.animReverse = !state.animReverse);
                 }, 500);
             }
-        },
-        login() {
-            if (this.user.email === "") {
-                this.error.email = "Entrez un email.";
-            } else {
-                axios
-                    .post("http://localhost:3000/api/auth/login", this.user)
-                    .then((res) => {
-                        localStorage.setItem("token", res.data.token);
-                        localStorage.setItem("userId", res.data.userId);
-                        this.userCurrent();
-                        this.$router.go("/home")
-                    })
-                    .catch((err) => {
-                        console.log({err});
-                        if (
-                            err.response.data.error == "mot de passe incorrect"
-                        ) {
-                            this.error.pass = err.response.data.error;
-                        } else {
-                            this.error.email = err.response.data.error;
-                        }
-                    });
-            }
-        },
-        userCurrent() {
-            axios
-                .get("http://localhost:3000/api/auth/" + localStorage.getItem("userId"))
-                    .then((user) => {console.log({user});
-                        localStorage.setItem("userCurrent", JSON.stringify(user.data))
-                    })
-                    .catch(err => console.log({err}))
         }
-    }
-}
+
+        return {
+            ...toRefs(state),
+            sendForm,
+            toggleModale
+        };
+    },
+};
 </script>
 
 <style lang="scss" scoped>
-.bloc-page{
+.bloc-page {
     background: white;
-    padding: .5rem;
+    padding: 0.5rem;
     box-shadow: 1px 1px 2px;
 }
 
