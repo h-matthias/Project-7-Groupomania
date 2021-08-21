@@ -24,19 +24,24 @@ export default {
     },
     actions: {
         async login( {commit} , user ) {
-            const [res, errorCode] = await ApiServices.loginUser(user)
-            console.log(res, errorCode);
+            const [res, error] = await ApiServices.loginUser(user)
 
             if ( res !== null ) {
-            console.log(res, errorCode);
-
                 commit('SET_INFO_USER', res)
                 return true
             } else {
-            console.log(res, errorCode);
-
-                return errorCode
+                return error
             }
         },
+        async signup ({dispatch}, user) {
+            const [res, error] = await ApiServices.signUp(user)
+
+            if ( res !== null) {
+                dispatch('login', user)
+                return true
+            } else {
+                return error
+            }
+        }
     },
 }

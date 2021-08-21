@@ -114,13 +114,22 @@
         </div>
     </div>
 </template>
+
 <script>
-import axios from "axios";
+import { reactive, toRefs } from 'vue';
+import {useStore} from 'vuex';
+import {useRouter} from 'vue-router';
+
 export default {
-    props: ["revele", "toggleModale", "userCurrent"],
-    name: "modaleSignup",
-    data() {
-        return {
+    props: ["revele", "toggleModale"],
+
+
+    setup() {
+        
+        const router = useRouter()
+        const store = useStore()
+
+        const state = reactive({
             user: {
                 lastname: "",
                 firstname: "",
@@ -139,99 +148,102 @@ export default {
                 password: true,
             },
             formValide: false,
-        };
-    },
-    methods: {
-        regexCheckName(name) {
+        })
+
+        /** Regex de validation */
+        const regexCheckName = (name) => {
             return /^[A-Za-z]{1,}$/.test(name);
-        },
-        regexCheckEmail(email) {
+        }
+        const regexCheckEmail = (email) => {
             return /^[\w-\\.]+@groupomania.fr$/.test(email);
-        },
-        regexCheckPass(pass) {
+        }
+        const regexCheckPass = (pass) => {
             return /^(?=.*[A-Z]{1,})(?=.*[a-z]{1,})(?=.*[0-9]{1,})[a-zA-Z0-9]{6,15}$/.test(pass);
-        },
-        checkLastname() {
-            if (!this.regexCheckName(this.user.lastname)) {
-                this.errorText.lastname =
+        }
+
+        /*** controle de donnée utilisant les regex */
+        const checkLastname = () => {
+            if (!regexCheckName(state.user.lastname)) {
+                state.errorText.lastname =
                     "Entrez un seul nom sans espace ni caractéres spéciaux.";
-                this.user.lastname = "";
+                state.user.lastname = "";
             } else {
-                this.errorText.lastname = "";
-                this.error.lastname = false;
+                state.errorText.lastname = "";
+                state.error.lastname = false;
             }
-            this.checkForm();
-        },
-        checkFirstname() {
-            if (!this.regexCheckName(this.user.firstname)) {
-                this.errorText.firstname =
+            checkForm();
+        }
+
+        const checkFirstname = () => {
+            if (!regexCheckName(state.user.firstname)) {
+                state.errorText.firstname =
                     "Entrez un seul prénom sans espace ni caractéres spéciaux.";
-                this.user.firstname = "";
+                state.user.firstname = "";
             } else {
-                this.errorText.firstname = "";
-                this.error.firstname = false;
+                state.errorText.firstname = "";
+                state.error.firstname = false;
             }
-            this.checkForm();
-        },
-        checkEmail() {
-            if (!this.regexCheckEmail(this.user.email)) {
-                this.errorText.email =
+            checkForm();
+        }
+
+        const checkEmail = () => {
+            if (!regexCheckEmail(state.user.email)) {
+                state.errorText.email =
                     'Entrez votre email Groupomania " votreNom@groupomania.fr ". ';
-                this.user.email = "";
+                state.user.email = "";
             } else {
-                this.errorText.email = "";
-                this.error.email = false;
+                state.errorText.email = "";
+                state.error.email = false;
             }
-            this.checkForm();
-        },
-        checkPassword() {
-            if (!this.regexCheckPass(this.user.password)) {
-                this.error.password = true;
-                this.user.password = null;
+            checkForm();
+        }
+
+        const checkPassword = () => {
+            if (!regexCheckPass(state.user.password)) {
+                state.error.password = true;
+                state.user.password = null;
             } else {
-                this.error.password = false;
+                state.error.password = false;
             }
-            this.checkForm();
-        },
-        checkForm() {
+            checkForm();
+        }
+
+        const checkForm = () => {
             if (
-                this.error.lastname ||
-                this.error.firstname ||
-                this.error.email ||
-                this.error.password
+                state.error.lastname ||
+                state.error.firstname ||
+                state.error.email ||
+                state.error.password
             ) {
-                this.formValide = false;
+                state.formValide = false;
             } else {
-                this.formValide = true;
+                state.formValide = true;
             }
-        },
-        sendFormCreateUser() {
-            if (this.formValide) {
-                axios
-                    .post("http://localhost:3000/api/auth/signup", this.user)
-                    .then(() => {
-                        this.loginAfterRegister();
-                    })
-                    .catch(
-                        (error) =>{
-                            //erreur mail deja enregistre
-                           this.error.email = true;
-                            this.errorText.email = error.response.data.error
-                            }
-                    );
+        }
+
+        const sendFormCreateUser = async () => {
+            if (state.formValide) {
+                const res = await store.dispatch('users/signup', state.user )
+                if (res ===  true) {
+                    router.push('home')
+                } else {
+                    state.error.email = true;
+                    state.errorText.email = res
+                }
             }
-        },
-        loginAfterRegister() {
-            axios
-                .post("http://localhost:3000/api/auth/login", this.user)
-                .then((res) => {
-                    localStorage.setItem("token", res.data.token);
-                    localStorage.setItem("userId", res.data.userId);
-                    this.userCurrent();
-                    this.$router.push("/home")   
-                })
-        },
-    },
+        }
+
+
+        return {
+            ...toRefs(state),
+            checkLastname,
+            checkFirstname,
+            checkEmail,
+            checkPassword,
+            sendFormCreateUser
+        }
+
+    }
 };
 </script>
 
