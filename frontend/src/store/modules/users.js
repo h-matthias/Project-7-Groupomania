@@ -19,6 +19,8 @@ export default {
             state.currentUser = user
             if (user) {
                 localStorage.setItem('currentUser',JSON.stringify(user))
+            } else {
+                localStorage.removeItem('currentUser')
             }
         }
     },
@@ -42,6 +44,9 @@ export default {
             } else {
                 return error
             }
+        },
+        logout ({commit}) {
+            commit('SET_INFO_USER', null)
         }
     },
 }

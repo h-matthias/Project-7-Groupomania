@@ -3,7 +3,7 @@
     <nav class="nav">
         <img class="nav__logo" src="../assets/logo-mono.svg" alt="logo groupomania">
         
-        <ul class="nav__list" v-if="hasConnect">
+        <ul class="nav__list" v-if="currentUser">
             <li class="nav__list__item">
                 <router-link to="/home">Acceuil</router-link>
             </li>
@@ -16,12 +16,6 @@
                 </button>
             </li>
         </ul>
-
-        <ul class="nav__list" v-else>
-            <li class="nav__list__item">
-                <router-link class="nav-link" to="/">Se connecter</router-link>
-            </li>
-        </ul>
         
     </nav>
 
@@ -29,38 +23,29 @@
 
 
 <script>
+import { computed } from 'vue'
+import { useRouter } from 'vue-router'
+import { useStore } from 'vuex'
 export default {
-    name: "headerNav",
-    data() {
+
+    setup() {
+
+        const router = useRouter()
+        const store = useStore()
+        
+        let currentUser = computed(() => store.state.users.currentUser )
+
+        const logout = () => {
+            store.dispatch('users/logout')
+            router.push("/");
+        }
+
         return {
-            hasConnect: false,
+            logout,
+            currentUser
         }
-    },
-    computed: {
-        verifConected: function () {
-            return this.hasConnect
-        }
-    },
-    mounted() {
-        this.isConnected()
-    },
-    methods: {
 
-        isConnected () {
-            if (localStorage.getItem("token") && localStorage.getItem("userId")){
-                this.hasConnect = true
-            } else {
-                this.hasConnect = false
-            }
-        },
-        logout() {
-            localStorage.removeItem("token");
-            localStorage.removeItem("userId");
-            localStorage.removeItem("userCurrent");
-            this.$router.push("/");
-        }
     }
-
 }
 </script>
 
