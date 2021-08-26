@@ -71,6 +71,18 @@ export async function sendPost ({data, token}) {
     }
 }
 
+/**
+ * Gestion Commentaire
+ */
+export async function sendComment ( {comment, token} ) {
+    try {
+        const res = await instance.post('comment', comment, {"headers": {"Authorization": token}} )
+        return [res.data, null]
+    } catch (error) {
+        return [null, error.response.data.error]
+        
+    }
+}
 
 /***
  * Fonction

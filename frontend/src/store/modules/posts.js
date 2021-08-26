@@ -35,6 +35,15 @@ export default {
             } else {
                 return error
             }
+        },
+        async sendComment ( {dispatch}, {comment, token} ) {
+            const [res, error] = await ApiServices.sendComment({comment, token})
+            if (res !==null) {
+                await dispatch('loadPost',token)
+                return true
+            } else {
+                return error
+            }
         }
     },
 };
