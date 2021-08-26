@@ -61,7 +61,7 @@
                 @deleteCom="deleteComment($event)" 
                 @modifyCom="modifyComment($event)"
             />
-            <!-- <FormComment :postId="post.id"/> -->
+            <FormComment :postId="post.id"/>
           
         </div>
     </li>         
@@ -71,93 +71,96 @@
 <script>
 //import component
 import ModaleConfirmationDelete from "./ModaleConfirmationDelete";
-//import FormComment from "./FormComment"
+import FormComment from "./FormComment"
 import Comments from "./Comment"
 import ModifyPostOrComment from "./ModifyPostOrComment"
 
 import { useStore } from 'vuex'
-import { computed } from '@vue/runtime-core';
+import { computed, reactive, toRefs } from 'vue';
 
 
 export default {
     components: {
         ModaleConfirmationDelete,
         ModifyPostOrComment,
-        //FormComment,
+        FormComment,
         Comments,
     },
     setup(){
 
-        const store = useStore();
+        const store = useStore(); 
         const token = `Bearer ${store.state.users.currentUser.token}`
 
+        const state = reactive({
+            userId: store.state.users.currentUser.userId,
+            revele:false,
+            id:"",
+            mode:"",
+            action:"",
+            animReverse:false
+        })
+
         const loadPost = async () => {
-            const res = await store.dispatch('posts/loadPost', token)
-            if (res) {
-                console.log("!");
-            }
-            
+            await store.dispatch('posts/loadPost', token)
         }
 
         loadPost()
 
         let allPosts = computed(() => store.state.posts.allPosts )
-        
-        return {
-            allPosts
-        }
-        
-    },
 
-    data() {
-        return {
-            //posts: [],
-            revele: false,
-            id: "",
-            mode:"",
-            action:"",
-            animReverse: false,
-            userId:""
-        }
-    },
-    methods:{
-        deletePost(id) {
-            this.mode = "post";
-            this.id = id;
-            this.action="delete";
-            this.revele=true;
-        },
-        modifyPost(id){
-            this.mode = "post";
-            this.id = id;
-            this.action="modify";
-            this.revele=true;
-        },
-        deleteComment($event){
-            this.mode = "comment";
-            this.action="delete";
-            this.id = $event;
-            this.revele= true;
-        },
-        modifyComment($event){
-            this.action="modify";
-            this.mode = "comment";
-            this.id = $event;
-            this.revele=true;
-            console.log($event);
-        },
-        toggleModale() {
-            if (!this.revele) {
-                this.revele = !this.revele;
+
+        function toggleModale() {
+            if (!state.revele) {
+                state.revele = !state.revele;
             } else {
-                this.animReverse = !this.animReverse;
+                state.animReverse = !state.animReverse;
                 setTimeout(() => {
-                    (this.revele = !this.revele),
-                    (this.animReverse = !this.animReverse);
+                    (state.revele = !state.revele),
+                    (state.animReverse = !state.animReverse);
                 }, 500);
             }
-        },
+        }
+
+        function deletePost(id) {
+            state.mode = "post";
+            state.id = id;
+            state.action="delete";
+            state.revele=true;
+        }
+
+        function modifyPost(id){
+            state.mode = "post";
+            state.id = id;
+            state.action="modify";
+            state.revele=true;
+        }
+
+        function deleteComment($event){
+            state.mode = "comment";
+            state.action="delete";
+            state.id = $event;
+            state.revele= true;
+        }
+
+        function modifyComment($event){
+            state.action="modify";
+            state.mode = "comment";
+            state.id = $event;
+            state.revele=true;
+        }
+        
+        return {
+            ...toRefs(state),
+            allPosts,
+            toggleModale,
+            deletePost,
+            modifyPost,
+            deleteComment,
+            modifyComment
+        }
+        
     }
+
         
 }
 
