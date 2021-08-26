@@ -2,11 +2,11 @@
     <div class="card">
         <div class="card__profil">
             <div class="card__profil__initial-user">
-                <p>{{ user.initial }}</p>
+                <p>{{ store.state.users.currentUser.initial }}</p>
             </div>
             <div class="card__profil__name">
                 <p>
-                    {{ user.name }}
+                    {{ store.state.users.currentUser.name }}
                 </p>
             </div>
         </div>
@@ -41,85 +41,84 @@
                     >Ajouter une photo</label
                 >
             </div>
-            <p class="file-return" v-if="image != null" >
-                votre image : {{ image.name}}
+            <p class="file-return" v-if="nameImage !== null" >
+                votre image : {{ nameImage}}
             </p>
-            <button @click.prevent="sendPost()" class="btn" type="submit">Envoyer</button>
+            <button @click.prevent="verifBeforeSendPost()" class="btn" type="submit">Envoyer</button>
         </form>
     </div>
 </template>
 
 <script>
-import axios from "axios";
+import { useStore } from 'vuex';
+import {  ref } from '@vue/reactivity';
 export default {
     name: "formPost",
 
-    data() {
-        return {
-            user: {},
-            image: null,
-            contentPost: "",
-            formPost: {},
-            errorContentPost: false,
-            token: "Bearer " + localStorage.getItem("token"),
-            userId: localStorage.getItem("userId"),
-        };
-    },
-    mounted() {
-        this.loadInfoUser();
-    },
-    methods: {
-        loadInfoUser() {
-            axios
-                .get("http://localhost:3000/api/auth/" + this.userId)
-                .then((res) => {
-                    this.user = res.data;
-                })
-                .catch((error) => console.log({ error }));
-        },
-        uploadImage(){
+    setup() {
+        const store = useStore()
 
-            this.image = this.$refs.image.files[0];
-            console.log(this.$refs.image.files[0]);
+        const token = `Bearer ${store.state.users.currentUser.token}`
+        const userId = store.state.users.currentUser.userId
+        
+        const image = ref(null)
+        const nameImage = ref(null)
+        const formPost = ref({})
+        const contentPost = ref("")
+        const errorContentPost = ref(false)
 
-        },
-        sendPost(){
-            const data = new FormData()
-            if (this.image === null && !this.contentPost){
-                this.errorContentPost = true;
-                console.log("post vide et image vide");
-
-            } else if (this.contentPost === "") {
-                this.errorContentPost = true;
-                console.log("content vide");
-                return
-            } else if (this.image === null && this.contentPost!=="") {
-                this.errorContentPost=false
-                data.append("userId", this.userId);
-                data.append("contentPost", this.contentPost);
-                console.log(data, this.contentPost );
-                this.axiosPost(data);
-                
-            } else {
-                data.append("userId", this.userId);
-                data.append("contentPost", this.contentPost);
-                data.append("image", this.image, this.image.name);
-                console.log(data, this.contentPost, this.image);
-                this.axiosPost(data);
-                
-            }
-        },
-        axiosPost(data) {
-            axios.post("http://localhost:3000/api/post",
-                data,
-                {"headers": 
-                    {"Authorization": this.token}
-                })
-            .then( console.log("post créer") )
-            .then( this.$router.go('/home') )
-            .catch( error => console.log({error}))
+        function uploadImage () {
+            image.value = image.value.files[0];
+            nameImage.value = image.value.name;  
         }
+
+        async function  verifBeforeSendPost  () {
+            const data = new FormData()
+            //errur si aucun contenu
+            if (!image.value.files.length  && !contentPost.value  ) {
+                errorContentPost.value = true
+            }
+            // erreur si texte vide avec image
+            else if (!contentPost.value) {
+                errorContentPost.value = true
+            }
+            // envoie post texte sans image
+            else if ( !image.value.files.length && contentPost.value !== "" ) {
+                errorContentPost.value = false
+                data.append("userId", userId)
+                data.append("contentPost", contentPost.value)
+                await sendPost(data)               
+
+            }
+            // envoie post avec image
+            else {
+                errorContentPost.value = false
+                data.append("userId", userId);
+                data.append("contentPost", contentPost.value);
+                data.append("image", image.value.files[0], nameImage.value);
+                await sendPost(data)               
+            }
+        }
+
+        const sendPost = async ( data ) => {
+            await store.dispatch("posts/sendPost", {data, token} )
+        }
+
+        return {
+        
+            store,
+            uploadImage,
+            image,
+            nameImage,
+            formPost,
+            contentPost,
+            errorContentPost,
+            sendPost,
+            verifBeforeSendPost
+        }
+
     },
+
 };
 </script>
 

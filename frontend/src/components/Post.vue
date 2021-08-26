@@ -16,7 +16,7 @@
         :id="id"
         :action="action"
         />
-    <li v-for="post in posts" :key="post.id"  >
+    <li v-for="post of allPosts" :key="post.id"  >
         <div class="card">
             <div v-if="post.user" class="card__profil" >
                 <div class="card__profil__initial-user">
@@ -61,7 +61,7 @@
                 @deleteCom="deleteComment($event)" 
                 @modifyCom="modifyComment($event)"
             />
-            <FormComment :postId="post.id"/>
+            <!-- <FormComment :postId="post.id"/> -->
           
         </div>
     </li>         
@@ -69,68 +69,58 @@
 </template>
 
 <script>
-import axios from "axios";
+//import component
 import ModaleConfirmationDelete from "./ModaleConfirmationDelete";
-import FormComment from "./FormComment"
+//import FormComment from "./FormComment"
 import Comments from "./Comment"
 import ModifyPostOrComment from "./ModifyPostOrComment"
 
+import { useStore } from 'vuex'
+import { computed } from '@vue/runtime-core';
+
 
 export default {
-    name: "post",
     components: {
         ModaleConfirmationDelete,
         ModifyPostOrComment,
-        FormComment,
+        //FormComment,
         Comments,
     },
+    setup(){
+
+        const store = useStore();
+        const token = `Bearer ${store.state.users.currentUser.token}`
+
+        const loadPost = async () => {
+            const res = await store.dispatch('posts/loadPost', token)
+            if (res) {
+                console.log("!");
+            }
+            
+        }
+
+        loadPost()
+
+        let allPosts = computed(() => store.state.posts.allPosts )
+        
+        return {
+            allPosts
+        }
+        
+    },
+
     data() {
         return {
-            posts: [],
+            //posts: [],
             revele: false,
             id: "",
             mode:"",
             action:"",
             animReverse: false,
-            token: "Bearer " + localStorage.getItem("token"),
-            userId: localStorage.getItem("userId"),
+            userId:""
         }
     },
-    mounted() {
-        this.loadPost();
-    },
-
-    methods: {
-        async loadPost(){
-          axios.get("http://localhost:3000/api/post", {"headers": {"Authorization": this.token}})
-            .then( res => {
-                this.posts = res.data;
-                //console.log(this.posts);
-                for (const post of this.posts) {
-                    //formatage de l'heure de création;
-                    post["createdAt"] = this.formatedTime(post.createdAt);
-                    //formatage de l'heure de mise à jour;
-                    post["updatedAt"] = this.formatedTime(post.updatedAt);
-                    //insert donné utilisateur par post
-                    axios.get("http://localhost:3000/api/auth/"+ post.userId)
-                        .then(res => {
-                            post["user"] = res.data;
-                        })
-                        .catch(err => console.log({err}))
-                        //formatage des données des commentaires par post
-                    for ( const comment of post.comments ){
-                        comment["createdAt"] = this.formatedTime(comment.createdAt);
-                        comment["updatedAt"] = this.formatedTime(comment.updatedAt);
-                        axios.get("http://localhost:3000/api/auth/"+ comment.userId)
-                            .then(res => {
-                                comment["user"] = res.data;
-                            })
-                            .catch(err => console.log({err}))
-                    }
-                }
-            })
-            .catch(error => console.log({error}))
-        },
+    methods:{
         deletePost(id) {
             this.mode = "post";
             this.id = id;
@@ -167,14 +157,10 @@ export default {
                 }, 500);
             }
         },
-        formatedTime(time){
-            let date = time.split("T")[0].split("-").reverse().join("/");
-            let heure = time.split("T")[1].split(":")[0];
-            let minute = time.split("T")[1].split(":")[1];
-            return `${date} ${heure}:${minute}`;
-        },
     }
+        
 }
+
 </script>
 
 <style lang="scss" scoped>
