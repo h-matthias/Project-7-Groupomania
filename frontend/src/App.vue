@@ -55,5 +55,27 @@ main{
         padding-top: 8rem;
     }
 }
+.enter-active {
+    animation: appare 0.5s;
+}
+@keyframes appare {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+.out-active {
+    animation: dispare 0.5s;
+}
+@keyframes dispare {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
 
 </style>
