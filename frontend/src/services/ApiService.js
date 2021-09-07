@@ -71,6 +71,17 @@ export async function sendPost ({data, token}) {
     }
 }
 
+export async function modifyPost ({ data, token, id }) {
+    try {
+        const res = await instance.put(`post/${id}`, data, {"headers": {"Authorization": token}} )
+        return [res.data, null]
+    } catch (error) {
+        return [null, error.response.data.error]
+        
+    }
+}
+
+
 /**
  * Gestion Commentaire
  */
@@ -83,6 +94,29 @@ export async function sendComment ( {comment, token} ) {
         
     }
 }
+
+export async function modifyComment ({ comment, token, id }) {
+    try {
+        const res = await instance.put(`comment/${id}`, comment, {"headers": {"Authorization": token}} )
+        return [res.data, null]
+    } catch (error) {
+        return [null, error.response.data.error]
+        
+    }
+}
+/**
+ * Suppression de post et commantaire
+ */
+export async function removePostOrComment ({mode, token, id}){
+    try {
+        const res = await instance.delete(`${mode}/${id}`, {"headers": {"Authorization": token}})
+        return [res.data, null]
+    } catch (error) {
+        return [null, error.response.data.error]
+    }
+}
+
+
 
 /***
  * Fonction

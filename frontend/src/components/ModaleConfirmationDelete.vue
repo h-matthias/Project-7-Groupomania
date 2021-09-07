@@ -6,7 +6,7 @@
                 Ete-vous sur de vouloir supprimer votre
                 {{ mode === "comment" ? "commentaire." : "publication." }}
             </h2>
-            <p v-if="reponse !== ''">{{ reponse }}</p>
+            <p v-if="response !== ''">{{ response }}</p>
             <div class="modale__block-btn">
                 <button class="modale__btn" @click="remove">
                     Oui
@@ -20,33 +20,41 @@
 </template>
 
 <script>
-import axios from "axios";
+import { useStore } from 'vuex';
+import { ref } from '@vue/reactivity';
 export default {
     name: "delete",
     props: ["revele", "mode", "id", "toggleModale", "action"],
-    data() {
-        return {
-            reponse: "",
-            token: "Bearer " + localStorage.getItem("token"),
-        };
-    },
-    methods: {
-        remove() {
-            axios
-                .delete(`http://localhost:3000/api/${this.mode}/${this.id}`, {
-                    headers: { Authorization: this.token },
-                })
-                .then(() => {
-                    this.reponse = `${this.mode} supprimé`;
-                    setTimeout(() => {
-                        this.$router.go("/home");
-                    }, 1000);
-                })
-                .catch(
-                    (this.reponse = "Oups un erreur est survenue ré-essayer.")
-                );
+
+    setup(props) {
+        const store = useStore()
+        const token = `Bearer ${store.state.users.currentUser.token}`
+        const response = ref("")
+
+        const remove = async () => {
+            let mode = props.mode
+            let id = props.id
+
+            const res = await store.dispatch("posts/removePostOrComment", {mode, token, id} )
+            console.log(res);
+            if (res) {
+                response.value = `${mode} supprimé`
+                setTimeout(() => {
+                    props.toggleModale()
+                }, 1000);  
+            } else {
+                response.value = "Un erreur est survenue ré-essayer."
+            }
+            setTimeout(() => {
+                response.value = ""
+            }, 1500);
         }
-    },
+        return {
+            remove,
+            response
+        }
+
+    }
 };
 </script>
 

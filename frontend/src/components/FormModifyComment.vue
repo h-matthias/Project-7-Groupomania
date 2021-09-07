@@ -2,7 +2,7 @@
     <form class="form">
         <div class="form__group">
             <div class="form__group__profil">
-                <p> {{ userCurrent.initial }} </p>
+                <p> {{ currentUser.initial }} </p>
             </div>
             
             <textarea
@@ -23,45 +23,42 @@
 </template>
 
 <script>
-import axios from 'axios'
+import { useStore } from 'vuex'
+import { reactive, toRefs } from '@vue/reactivity'
 export default {
-    props:  ["id"],
+    props:  ["id", "toggleModale" ],
     name: "formModifyComment",
-    data() {
-        return {
+    setup (props) {
+        const store = useStore()
+
+        const token = `Bearer ${store.state.users.currentUser.token}`
+
+        const state = reactive ({
             errorContentComment: false,
             contentComment:"",
-            token: "Bearer " + localStorage.getItem("token"),
-            userId: localStorage.getItem("userId"),
-            userCurrent: JSON.parse(localStorage.getItem("userCurrent"))
-        }
-    },
-    methods: {
-        openFormComment() {
-            this.writeComment = !this.writeComment
-        },
-        sendModifyComment() {
-            if (this.contentComment === "") {
+            currentUser: store.state.users.currentUser,
+            
+
+        })
+
+        async function sendModifyComment () {
+             if (this.contentComment === "") {
                 this.errorContentComment = true
-            }
-            else {
-                const data = {
-                    userId: parseInt(this.userId),
-                    contentComment: this.contentComment,
+            } else {
+                const comment = {
+                    userId: state.currentUser.userId,
+                    contentComment: state.contentComment
                 }
-                console.log(data);
-                axios.put("http://localhost:3000/api/comment/" + this.id,
-                data,
-                {"headers": 
-                    {"Authorization": this.token}
-                })
-                .then(
-                    
-                    console.log("commentaire Modifié")
-                    )
-                .then (this.$router.go(("/home")))
-                .catch(error => console.log({error}))
-            }
+                let id= props.id
+                await store.dispatch('posts/modifyComment', {comment, token, id} )
+                props.toggleModale()
+            } 
+        }
+
+
+        return {
+            ...toRefs(state),
+            sendModifyComment
         }
     }
 }

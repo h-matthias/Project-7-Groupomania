@@ -2,11 +2,11 @@
     <div class="card">
         <div class="card__profil">
             <div class="card__profil__initial-user">
-                <p>{{ user.initial }}</p>
+                <p>{{ currentUser.initial }}</p>
             </div>
             <div class="card__profil__name">
                 <p>
-                    {{ user.name }}
+                    {{ currentUser.name }}
                 </p>
             </div>
         </div>
@@ -27,101 +27,103 @@
             </div>
             <div class="form__group form__group--file">
                 <input
-                    @change="uploadImage()"
-                    ref="image"
-                    id="input-file"
+                    @change="modifyUploadImage()"
+                    ref="img"
+                    id="input-file-modify"
                     class="form__group__input form__group__input--file"
                     type="file"
-                    name="image"
+                    name="img"
                     accept=".jpg, .jpeg, .png, .gif"
                 />
                 <label
                     class="form__group__label form__group__label--file"
-                    for="input-file"
+                    for="input-file-modify"
                     >Modifier votre photo</label
                 >
             </div>
-            <p class="file-return" v-if="image != null" >
-                votre image : {{ image.name}}
+            <p class="file-return" v-if="img != null" >
+                votre image : {{ nameImage}}
             </p>
-            <button @click.prevent="sendModifyPost()" class="btn" type="submit">Modifier</button>
+            <button @click.prevent="verifBeforeSendModifyPost()" class="btn" type="submit">Modifier</button>
         </form>
     </div>
 </template>
 
 <script>
-import axios from "axios";
+import { ref } from 'vue';
+import { useStore } from 'vuex';
+
 export default {
-    props: ["id"],
+    props: ["id", "toggleModale"],
     name: "formModifyPost",
 
-    data() {
-        return {
-            user: {},
-            image: null,
-            contentPost: "",
-            formPost: {},
-            errorContentPost: false,
-            token: "Bearer " + localStorage.getItem("token"),
-            userId: localStorage.getItem("userId"),
-        };
-    },
-    mounted() {
-        this.loadInfoUser();
-    },
-    methods: {
-        loadInfoUser() {
-            axios
-                .get("http://localhost:3000/api/auth/" + this.userId)
-                .then((res) => {
-                    this.user = res.data;
-                })
-                .catch((error) => console.log({ error }));
-        },
-        uploadImage(){
+    setup(props) {
+        const store = useStore()
 
-            this.image = this.$refs.image.files[0];
-            console.log(this.$refs.image.files[0]);
+        const token = `Bearer ${store.state.users.currentUser.token}`
+        const currentUser = store.state.users.currentUser
+        
+        const img = ref(null)
+        const nameImage = ref(null)
+        const formPost = ref({})
+        const contentPost = ref("")
+        const errorContentPost = ref(false)
 
-        },
-        sendModifyPost(){
-            const data = new FormData()
-            if (this.image === null && !this.contentPost){
-                this.errorContentPost = true;
-                console.log("post vide et image vide");
-
-            } else if (this.contentPost === "") {
-                this.errorContentPost = true;
-                console.log("content vide");
-                return
-            } else if (this.image === null && this.contentPost!=="") {
-                this.errorContentPost=false
-                data.append("userId", this.userId);
-                data.append("contentPost", this.contentPost);
-                console.log(data, this.contentPost );
-                this.axiosPost(data);
-                
-            } else {
-                data.append("userId", this.userId);
-                data.append("contentPost", this.contentPost);
-                data.append("image", this.image, this.image.name);
-                console.log(data, this.contentPost, this.image);
-                this.axiosPost(data);
-                
-            }
-        },
-        axiosPost(data) {
-            axios.put("http://localhost:3000/api/post/" + this.id,
-                data,
-                {"headers": 
-                    {"Authorization": this.token}
-                })
-            .then( console.log("post Modifier") )
-            .then( this.$router.go('/home') )
-            .catch( error => console.log({error}))
+        function modifyUploadImage () {
+            img.value = img.value.files[0];
+            nameImage.value = img.value.name;  
         }
+
+        async function  verifBeforeSendModifyPost  () {
+            const data = new FormData()
+            //errur si aucun contenu
+            if (!img.value.files.length  && !contentPost.value  ) {
+                errorContentPost.value = true
+            }
+            // erreur si texte vide avec image
+            else if (!contentPost.value) {
+                errorContentPost.value = true
+            }
+            // envoie post texte sans image
+            else if ( !img.value.files.length && contentPost.value !== "" ) {
+                errorContentPost.value = false
+                data.append("userId", currentUser.userId)
+                data.append("contentPost", contentPost.value)
+                await sendModifyPost(data)
+
+            }
+            // envoie post avec image
+            else {
+                errorContentPost.value = false
+                data.append("userId", currentUser.userId);
+                data.append("contentPost", contentPost.value);
+                data.append("image", img.value.files[0], nameImage.value);
+                await sendModifyPost(data)               
+            }
+        }
+
+        const sendModifyPost = async ( data ) => {
+            let id = props.id
+            await store.dispatch("posts/modifyPost", {data, token, id})
+            props.toggleModale()
+        }
+
+        return {
+            store,
+            modifyUploadImage,
+            img,
+            nameImage,
+            formPost,
+            contentPost,
+            errorContentPost,
+            currentUser,
+            verifBeforeSendModifyPost
+        }
+
     },
-};
+
+    
+}
 </script>
 
 <style lang="scss" scoped>
