@@ -6,9 +6,12 @@ module.exports = (req, res , next) => {
         const token = req.headers.authorization.split(" ")[1];
         const decodeToken = jwt.verify( token, process.env.JWT_PASS );
         const userId = decodeToken.userId;
+        const userRole = decodeToken.userRole;
         
         if ( req.body.userId && req.body.userId !== userId ){
             throw "utilisateur non identifer";
+        } else if( userRole == 1 ) {
+            next();
         } else {
             next();
         }
