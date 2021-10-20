@@ -1,8 +1,8 @@
 <template>
 <div class="modale" v-if="revele && action=='modify'">
     <div class="overlay" @click="toggleModale"></div>
-    <FormModifyPost class="formPost" v-if="mode == 'post'" :id="id"/>
-    <FormModifyComment class="formComment" v-if="mode == 'comment'" :id="id"/>
+    <FormModifyPost class="formPost" v-if="mode == 'post'" :id="id" :toggleModale="toggleModale" />
+    <FormModifyComment class="formComment" v-if="mode == 'comment'" :id="id" :toggleModale="toggleModale" />
     
 </div>
 </template>
