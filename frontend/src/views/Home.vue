@@ -14,16 +14,6 @@ export default {
         FormPost,
         Post
     },
-    mounted() {
-        this.isConnected()
-    },
-    methods: {
-        isConnected () {
-            if (!localStorage.getItem("token") || !localStorage.getItem("userId")){
-                this.$router.push("/")
-            }
-        },
-    }
 }
 </script>
 
