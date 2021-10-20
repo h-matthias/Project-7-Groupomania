@@ -26,6 +26,14 @@ export async function signUp (user) {
         return [null, error.response.data.error]
     }
 }
+export async function removeUser ({id, token}) {
+try {
+    const res = await instance.delete(`auth/${id}`, {"headers": {"Authorization": token}} )
+    return [res.data, null]
+} catch (error) {
+    return [null, error.response.data.error]
+}
+}
 
 /***
  * Gestion publications

@@ -39,7 +39,7 @@ export default {
             const [res, error] = await ApiServices.signUp(user)
 
             if ( res !== null) {
-                dispatch('login', user)
+                await dispatch('login', user)
                 return true
             } else {
                 return error
@@ -47,6 +47,17 @@ export default {
         },
         logout ({commit}) {
             commit('SET_INFO_USER', null)
+        },
+        async removeUser ({dispatch}, {id, token}){
+            const [res, error] = await ApiServices.removeUser({id, token})
+
+            if (res  !== null) {
+                dispatch('logout')
+                return true
+            } else {
+                return error
+            }
         }
+
     },
 }
