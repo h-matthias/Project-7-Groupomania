@@ -1,36 +1,72 @@
 import { createRouter, createWebHistory } from "vue-router";
-import Login from "../views/Login.vue";
-import Home from "../views/Home.vue"
-import Account from "../views/Account.vue"
+
+//Pages
+import Home from "../views/Home.vue";
+const Login = () => import("../views/Login.vue");
+const Account = () => import("../views/Account.vue");
+const Mod = () => import("../views/Moderateur.vue");
+const NotFound = () => import('../views/NotFound.vue')
+
+//creation des routes
 const routes = [
     {
         path: "/",
         name: "login",
         component: Login,
+        beforeEnter: [checkNotLoggedIn],
     },
     {
         path: "/home",
         name: "home",
-        component: Home
+        component: Home,
+        beforeEnter: [checkLoggedIn],
     },
     {
         path: "/account",
         name: "account",
-        component: Account 
-    }
-    // {
-    //   path: '/about',
-    //   name: 'About',
-    //   // route level code-splitting
-    //   // this generates a separate chunk (about.[hash].js) for this route
-    //   // which is lazy-loaded when the route is visited.
-    //   component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
-    // }
+        component: Account,
+        beforeEnter: [checkLoggedIn],
+    },
+    {
+        path: "/mod",
+        name: "moderateur",
+        component: Mod,
+        /* 
+            TODO : check mod 
+        */
+    },
+    {
+        path: '/notfound',
+        name: 'NotFound',
+        component: NotFound
+      },
+      {
+        path: '/:wrongPath(.*)',
+        redirect: (to) => {
+          return { name: 'NotFound', params: { wrongPath: to.params.wrongPath } }
+        }
+      }
 ];
 
+// creation du router
 const router = createRouter({
     history: createWebHistory(process.env.BASE_URL),
     routes,
 });
 
+/* Global LocalStorage */
+
+function checkLoggedIn() {
+    if (!localStorage.getItem("currentUser")) {
+        return "/login";
+    }
+}
+
+function checkNotLoggedIn() {
+    if (localStorage.getItem("currentUser")) {
+        return "/home";
+    }
+}
+
+// Exportation du router
 export default router;
