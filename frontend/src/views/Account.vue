@@ -5,7 +5,7 @@
         </h2>
         <div class="info-user">
             <p class="info-user__name">
-                Nom : {{nameUser.name}}
+                Nom : {{currentUser.name}}
             </p>
         </div>
 
@@ -22,7 +22,7 @@
             <p class="delete-user__info">
                 Cette opération est irreversible. Votre compte sera totalement supprimer, vous ne pourrez plus utiliser les services du résaux social de groupomania.
             </p>
-            <button @click="deleteConfirmation" v-if="!reveleConfirmation" class="delete-user__btn btn">Supprimer mon compte</button>
+            <button @click="reveleDeleteConfirmation" v-if="!reveleConfirmation" class="delete-user__btn btn">Supprimer mon compte</button>
             <div class="confirmed-delete" v-if="reveleConfirmation">
                 <p class="delete-user__info">
                     Ete-vous sur de vouloir supprimer votre compte ?
@@ -38,38 +38,37 @@
 </template>
 
 <script>
-import axios from 'axios';
+import { ref } from '@vue/reactivity';
+import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
 
 export default {
     name: "account",
-    components: {
-        
-    },
-    data(){
+    setup() {
+        const store = useStore()
+        const router = useRouter()
+        const currentUser = store.state.users.currentUser
+        const reveleConfirmation = ref(false)
+        const token =`Bearer ${currentUser.token}`
+
+        function reveleDeleteConfirmation () {
+            reveleConfirmation.value = !reveleConfirmation.value
+        }
+
+        async function deleteAccount () {
+            let id = currentUser.userId
+            await store.dispatch('users/removeUser', {id, token})
+            router.push('/')
+        }
+
         return {
-            nameUser:JSON.parse(localStorage.getItem("userCurrent")),
-            userId: localStorage.getItem("userId"),
-            reveleConfirmation: false,
-            token: "Bearer " + localStorage.getItem("token"),
+            currentUser,
+            reveleConfirmation,
+            reveleDeleteConfirmation,
+            deleteAccount
         }
     },
-    methods: {
-        deleteConfirmation() {
-            this.reveleConfirmation = !this.reveleConfirmation
-            console.log(this.userId);
-        },
-        deleteAccount() {
-            axios.delete("http://localhost:3000/api/auth/" + this.userId, {"headers": {"Authorization": this.token}})
-            .then( () => {
-                localStorage.removeItem("userCurrent");
-                localStorage.removeItem("token");
-                localStorage.removeItem("userId");
-                this.$router.push("/");
-            })
-            .catch(err => console.log({err}))
-            
-        }
-    }
+    
 }
 </script>
 
