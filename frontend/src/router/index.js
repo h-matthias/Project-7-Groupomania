@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 
 //Pages
 import Home from "../views/Home.vue";
-const Login = () => import("../views/Login.vue");
+import Login from "../views/Login.vue";
 const Account = () => import("../views/Account.vue");
 const Mod = () => import("../views/Moderateur.vue");
 const NotFound = () => import('../views/NotFound.vue')
