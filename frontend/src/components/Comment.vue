@@ -136,7 +136,7 @@ export default {
         background: darken($color: #dc3545, $amount: 15%);
     }
     &--modify {
-        background: #ffc107;
+        background: #5a4400;
         &:hover {
             background: darken($color: #ffc107, $amount: 15%);
         }
