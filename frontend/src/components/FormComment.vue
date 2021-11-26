@@ -9,7 +9,7 @@
                 ref="textarea"
                 aria-label="ecrire un commentaire"
                 name="contentComment"
-                id="input-comment"
+                
                 cols="30"
                 rows="1"
                 v-model="contentComment"
