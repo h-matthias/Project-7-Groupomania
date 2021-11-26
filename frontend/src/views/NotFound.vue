@@ -1,36 +1,56 @@
 <template>
     <div>
-        <h1>{{ title }}</h1>
-        <h2 v-if="wrongPath">"{{ wrongPath }}"</h2>
-        <el-button @click="goToPreviousPage" type="primary" round>
+        <h1>Page introuvable</h1>
+        <button @click="goToPreviousPage" >
             Revenir en arrière
-        </el-button>
+        </button>
     </div>
 </template>
 
 <script>
-import { reactive, toRefs } from "vue";
-import { useRouter, useRoute } from "vue-router";
+import { useRouter} from "vue-router";
 export default {
     setup() {
         const router = useRouter();
-        const route = useRoute();
-
-        const state = reactive({
-            wrongPath: route.params.wrongPath,
-            title: "Page introuvable",
-        });
 
         const goToPreviousPage = function() {
             router.back();
         };
 
         return {
-            ...toRefs(state),
             goToPreviousPage,
         };
     },
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+
+div{
+    display: flex;
+    justify-content: center;
+    align-items:center ;
+    flex-direction: column;
+    margin-top: 1rem;
+}
+
+button{
+    cursor: pointer;
+    padding: 0.5rem 0.6rem;
+    border: 2px solid transparent;
+    background: #0d6efd;
+    color: white;
+    border-radius: 0.3rem;
+    font-size: 1rem;
+    margin: 1rem 0;
+     transition: all 0.2s linear;
+    &:focus {
+        outline: none;
+        border-color: black;
+    }
+    &:hover {
+        background: darken($color: #0d6efd, $amount: 15);
+    }
+}
+
+</style>
