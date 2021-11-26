@@ -102,6 +102,9 @@ export default {
 
         const sendPost = async ( data ) => {
             await store.dispatch("posts/sendPost", {data, token} )
+            contentPost.value = "";
+            image.value = null;
+            nameImage.value = null;
         }
 
         return {
