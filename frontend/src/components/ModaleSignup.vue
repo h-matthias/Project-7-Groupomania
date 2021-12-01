@@ -22,10 +22,11 @@
                         id="lastname"
                         name="lastname"
                         required
+                        aria-describedby="lastnameError"
                     />
-                    <div class="form__bloc__error" v-if="error.lastname">
+                    <div class="form__bloc__error" >
                         <p
-                            v-if="error.lastname"
+                            id="lastnameError"
                             class="form__bloc__error--danger"
                         >
                             {{ errorText.lastname }}
@@ -45,10 +46,12 @@
                         id="firstname"
                         name="firstname"
                         required
+                        aria-describedby="firstnameError"
+
                     />
-                    <div class="form__bloc__error" v-if="error.firstname">
+                    <div class="form__bloc__error">
                         <p
-                            v-if="error.firstname"
+                            id="firstnameError"
                             class="form__bloc__error--danger"
                         >
                             {{ errorText.firstname }}
@@ -68,9 +71,13 @@
                         id="emailsignup"
                         name="email"
                         required
+                        aria-describedby="emailError"
+
                     />
-                    <div class="form__bloc__error" v-if="error.email">
-                        <p v-if="error.email" class="form__bloc__error--danger">
+                    <div class="form__bloc__error">
+                        <p class="form__bloc__error--danger"
+                            id="emailError"
+                        >
                             {{ errorText.email }}
                         </p>
                     </div>
@@ -88,9 +95,12 @@
                         id="passsignup"
                         name="password"
                         required
+                        aria-describedby="passwordError"
+
                     />
                     <div class="form__bloc__error">
                         <p
+                            id="passwordError"
                             :class="{
                                 'form__bloc__error--danger': error.password,
                             }"
@@ -190,7 +200,7 @@ export default {
             if (!regexCheckEmail(state.user.email)) {
                 state.errorText.email =
                     'Entrez votre email Groupomania " votreNom@groupomania.fr ". ';
-                state.user.email = "";
+                state.error.email = true;
             } else {
                 state.errorText.email = "";
                 state.error.email = false;

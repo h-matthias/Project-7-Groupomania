@@ -2,12 +2,12 @@
     <div class="card">
         <div class="card__profil">
             <div class="card__profil__initial-user">
-                <p>{{ store.state.users.currentUser.initial }}</p>
+                <h2>{{ store.state.users.currentUser.initial }}</h2>
             </div>
             <div class="card__profil__name">
-                <p>
+                <h3>
                     {{ store.state.users.currentUser.name }}
-                </p>
+                </h3>
             </div>
         </div>
         <form :id="formPost" class="form" enctype="multipart/form-data">
@@ -148,7 +148,7 @@ export default {
             box-shadow: 1px 1px 5px;
             //border: 1px solid black;
             margin-right: 1rem;
-            & p {
+            & h2 {
                 font-size: 1.2rem;
                 font-weight: bold;
                 margin: auto;

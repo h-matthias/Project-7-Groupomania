@@ -96,7 +96,7 @@ export default {
     border: 1px solid #dc3545;
     &__info{
         color: #dc3545;
-        text-align: justify;
+        
         margin-bottom: 1rem;
     }
     &__btn {

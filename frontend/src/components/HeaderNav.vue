@@ -1,7 +1,12 @@
 <template>
 
     <nav class="nav">
-        <img class="nav__logo" src="../assets/logo-mono.svg" alt="logo groupomania">
+        <h1>
+            <span>
+                Groupomania
+            </span>
+            <img class="nav__logo" src="../assets/logo-mono.svg" alt="logo groupomania">
+        </h1>
         
         <ul class="nav__list" v-if="currentUser">
             <li class="nav__list__item">
@@ -49,7 +54,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .nav{
     z-index: 1;
     position: fixed;
@@ -96,6 +101,11 @@ button{
         height: 2px;
         background: #333;
     }
+}
+
+h1 span {
+    visibility: hidden;
+    position: absolute;
 }
 
 

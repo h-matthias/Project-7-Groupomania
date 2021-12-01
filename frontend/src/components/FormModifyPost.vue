@@ -2,17 +2,17 @@
     <div class="card">
         <div class="card__profil">
             <div class="card__profil__initial-user">
-                <p>{{ currentUser.initial }}</p>
+                <h2>{{ currentUser.initial }}</h2>
             </div>
             <div class="card__profil__name">
-                <p>
+                <h3>
                     {{ currentUser.name }}
-                </p>
+                </h3>
             </div>
         </div>
         <form :id="formPost" class="form" enctype="multipart/form-data">
             <div class="form__group">
-                <label class="form__group__label" for="input"
+                <label class="form__group__label" for="inputModify"
                     >Vous voulez modifier votre post !!!</label
                 >
                 <textarea
@@ -20,7 +20,7 @@
                     class="form__group__input"
                     v-model="contentPost"
                     name="contentPost"
-                    id="input"
+                    id="inputModify"
                     cols="30"
                     rows="4"
                 ></textarea>

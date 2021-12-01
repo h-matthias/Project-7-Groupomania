@@ -1,7 +1,7 @@
 <template>
     <div class="bloc-page">
         <div>
-            <h1>Bienvenue sur le résau social de <span>Groupomania</span>.</h1>
+            <h2>Bienvenue sur le résau social de <span>Groupomania</span>.</h2>
             <p class="info">Réserve aux employé</p>
         </div>
 
@@ -13,7 +13,7 @@
                 <div class="form__group">
                     <label class="form__group__label" for="email"
                         >Votre Email :
-                        <span class="error" v-if="error.email">{{
+                        <span class="error" id="emailError">{{
                             error.email
                         }}</span></label
                     >
@@ -23,12 +23,13 @@
                         name="email"
                         id="email"
                         v-model="user.email"
+                        aria-describedby="emailError"
                     />
                 </div>
                 <div class="form__group">
                     <label class="form__group__label" for="password"
                         >Votre mot de passe :
-                        <span class="error" v-if="error.pass">{{
+                        <span class="error" id="passwordError">{{
                             error.pass
                         }}</span></label
                     >
@@ -38,6 +39,7 @@
                         name="password"
                         id="password"
                         v-model="user.password"
+                        aria-describedby="passwordError"
                     />
                 </div>
 
@@ -65,8 +67,8 @@
 
 <script>
 import { reactive, toRefs } from "vue";
-import {useStore} from 'vuex';
-import {useRouter} from 'vue-router';
+import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 import ModaleSignup from "../components/ModaleSignup.vue";
 
 export default {
@@ -74,9 +76,8 @@ export default {
         ModaleSignup,
     },
     setup() {
-
-        const router = useRouter()
-        const store = useStore()
+        const router = useRouter();
+        const store = useStore();
 
         const state = reactive({
             user: {
@@ -96,14 +97,14 @@ export default {
             if (state.user.email === "") {
                 state.error.email = "Entrez un email.";
             } else {
-                const res = await store.dispatch('users/login', state.user)
+                const res = await store.dispatch("users/login", state.user);
                 if (res === true) {
-                    router.push('home')
+                    router.push("home");
                 } else {
-                    if (res === 'mot de passe incorrect') {
-                        state.error.pass = res
+                    if (res === "mot de passe incorrect") {
+                        state.error.pass = res;
                     } else {
-                        state.error.email = res
+                        state.error.email = res;
                     }
                 }
             }
@@ -119,12 +120,12 @@ export default {
                         (state.animReverse = !state.animReverse);
                 }, 500);
             }
-        }
+        };
 
         return {
             ...toRefs(state),
             sendForm,
-            toggleModale
+            toggleModale,
         };
     },
 };
@@ -137,7 +138,7 @@ export default {
     box-shadow: 1px 1px 2px;
 }
 
-h1 {
+h2 {
     margin: 0.5rem;
     font-size: 1.6rem;
 }

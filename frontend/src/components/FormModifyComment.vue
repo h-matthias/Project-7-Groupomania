@@ -2,7 +2,7 @@
     <form class="form">
         <div class="form__group">
             <div class="form__group__profil">
-                <p> {{ currentUser.initial }} </p>
+                <h2> {{ currentUser.initial }} </h2>
             </div>
             
             <textarea

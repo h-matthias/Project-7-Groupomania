@@ -96,7 +96,7 @@ export default {
             }
             &__date-publish{
                 margin-left: .5rem ;
-                font-size: 0.6rem;
+                font-size: 0.7rem;
                 
             }
         }
@@ -138,7 +138,7 @@ export default {
     &--modify {
         background: #5a4400;
         &:hover {
-            background: darken($color: #ffc107, $amount: 15%);
+            background: darken($color: #5a4400, $amount: 15%);
         }
     }
 }

@@ -20,12 +20,12 @@
         <div class="card">
             <div v-if="post.user" class="card__profil" >
                 <div class="card__profil__initial-user">
-                   <p>  {{ post.user.initial }} </p>
+                   <h2>  {{ post.user.initial }} </h2>
                 </div>
                 <div class="card__profil__info">
-                    <p class="card__profil__info__name">               
+                    <h3 class="card__profil__info__name">               
                         {{ post.user.name }}
-                    </p>
+                    </h3>
                     <p class="card__profil__info__date-publish">
                         {{ post.createdAt }} {{ post.createdAt === post.updatedAt ? "": "Modifié" }}
                     </p>
@@ -199,7 +199,7 @@ export default {
                 //border: 1px solid black;
                 box-shadow: 1px 1px 5px;
                 margin-right: 1rem;
-                & p{
+                & h2{
                     font-size: 1.2rem;
                     font-weight: bold;
                     margin: auto;
@@ -258,7 +258,7 @@ export default {
         &--modify {
             background: #5a4400;
             &:hover {
-                background: darken($color: #ffc107, $amount: 15%);
+                background: darken($color: #5a4400, $amount: 15%);
             }
         }
     }
