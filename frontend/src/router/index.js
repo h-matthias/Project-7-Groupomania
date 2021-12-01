@@ -42,8 +42,8 @@ const routes = [
       },
       {
         path: '/:wrongPath(.*)',
-        redirect: (to) => {
-          return { name: 'NotFound', params: { wrongPath: to.params.wrongPath } }
+        redirect: () => {
+          return { name: 'NotFound' }
         }
       }
 ];
